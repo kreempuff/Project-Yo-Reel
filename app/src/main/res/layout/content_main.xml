@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="app.com.lentusignavus.popularmovies.MainActivity"
+    tools:showIn="@layout/activity_main"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="Some stuff"
+        android:layout_width="192dp"
+        android:layout_height="192dp"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:onClick="showToast">
+
+    </ImageView>
+
+</GridLayout>
