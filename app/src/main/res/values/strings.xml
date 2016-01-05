@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="basic_image">basic image</string>
+    <string name="practice_image_desc">This is a practice image</string>
 </resources>
