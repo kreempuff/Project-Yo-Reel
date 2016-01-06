@@ -34,17 +34,23 @@ public class GetMovies extends AsyncTask<Void, Void, JSONObject> {
     JSONObject movieDataJson = null;
     JSONHandler jsonHandler;
 
+    private OnTaskCompleted listener;
+
+    public GetMovies(OnTaskCompleted delegate){
+        this.listener = delegate;
+    }
+
     @Override
     protected JSONObject doInBackground(Void... params) {
 
 
         try {
 
-             apiUrl = Uri.parse(ApiKey.getApiBaseUrl())
+             apiUrl = Uri.parse(ApiInfo.getApiBaseUrl())
                     .buildUpon()
                     .appendPath("discover")
                     .appendPath("movie")
-                    .appendQueryParameter("api_key", ApiKey.getMoviedbKey())
+                    .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
                     .appendQueryParameter("sort_by", "popularity.desc")
                     .build();
 
@@ -116,6 +122,11 @@ public class GetMovies extends AsyncTask<Void, Void, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
 
+        try {
+            listener.onTaskCompleted(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return;
 
