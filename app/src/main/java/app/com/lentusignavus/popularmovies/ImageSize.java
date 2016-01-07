@@ -16,7 +16,7 @@ public class ImageSize {
         sizes.put("w185", "w185/");
         sizes.put("w342", "w342/");
         sizes.put("w500", "w500/");
-        sizes.put("w780", "w708/");
+        sizes.put("w780", "w780/");
         sizes.put("original", "original/");
 
         return sizes;

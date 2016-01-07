@@ -1,6 +1,6 @@
 package app.com.lentusignavus.popularmovies;
 
-import android.media.Image;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,17 +8,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
@@ -28,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     String imageUrl;
     ArrayAdapter<String> imageAdapter;
     GridView mgridView;
+    Intent detailView;
 
 
 
@@ -63,12 +59,27 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String movieTitle = "";
+                String movieImagePath = "";
+                String movieDescription = "";
+                try {
+                   movieTitle = jsonArrayOfMovies.getJSONObject(position).getString("original_title");
+                   movieImagePath = jsonArrayOfMovies.getJSONObject(position).getString("poster_path");
+                   movieDescription = jsonArrayOfMovies.getJSONObject(position).getString("overview");
+                } catch (JSONException e) {
+
+                }
                 try {
                     Toast.makeText(getApplicationContext(), jsonArrayOfMovies.getJSONObject(position).getString("original_title"), Toast.LENGTH_SHORT)
                             .show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                detailView = new Intent(getApplication(), DetailViewActivity.class);
+                detailView.putExtra("title", movieTitle);
+                detailView.putExtra("imagePath", movieImagePath);
+                detailView.putExtra("description", movieDescription);
+                startActivity(detailView);
             }
         });
 
