@@ -7,6 +7,8 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="app.com.lentusignavus.popularmovies.MainActivity"
     tools:showIn="@layout/activity_main"
+    android:paddingTop="@dimen/main_view_padding"
+    android:paddingBottom="@dimen/main_view_padding"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent">

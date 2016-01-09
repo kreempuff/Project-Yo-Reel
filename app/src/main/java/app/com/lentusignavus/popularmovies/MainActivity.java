@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -51,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         Toast.makeText(getApplication(), imageUrl, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
 
     @Override
     public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                    movieImagePath = jsonArrayOfMovies.getJSONObject(position).getString("poster_path");
                    movieDescription = jsonArrayOfMovies.getJSONObject(position).getString("overview");
                 } catch (JSONException e) {
-
+                    Log.e(getLocalClassName(), "MainActivity.OnItemClickListener", e);
                 }
                 try {
                     Toast.makeText(getApplicationContext(), jsonArrayOfMovies.getJSONObject(position).getString("original_title"), Toast.LENGTH_SHORT)

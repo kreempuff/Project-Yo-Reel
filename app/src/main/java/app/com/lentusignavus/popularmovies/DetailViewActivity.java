@@ -3,6 +3,7 @@ package app.com.lentusignavus.popularmovies;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,21 +29,23 @@ public class DetailViewActivity extends AppCompatActivity {
         movieTitleView = (TextView) findViewById(R.id.movie_title);
         movieDescriptionView = (TextView) findViewById(R.id.movie_description);
         detailToolbar = (Toolbar) findViewById(R.id.detail_view_toolbar);
+
         setSupportActionBar(detailToolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         extras = getIntent().getExtras();
         if (extras != null) {
             movieTitle = extras.getString("title");
             movieImagePath = extras.getString("imagePath");
             movieDescription = extras.getString("description");
+            getSupportActionBar().setTitle(movieTitle);
 
 
             Picasso.with(this).load(ApiInfo.getImageBaseUrl() + "w780" + movieImagePath).into(moviePosterView);
             movieTitleView.setText(movieTitle);
             movieDescriptionView.setText(movieDescription);
         }
-
-
 
     }
 }

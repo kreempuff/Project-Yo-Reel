@@ -17,9 +17,7 @@ import org.json.JSONException;
 
 import java.util.HashMap;
 
-/**
- * Created by kare2436 on 12/30/15.
- */
+
     public class ImageAdapter extends BaseAdapter {
 
         private Context mContext;
@@ -53,7 +51,7 @@ import java.util.HashMap;
                 imageView = new ImageView(mContext);
                 imageView.setLayoutParams(new GridView.LayoutParams(650, 650));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setPadding(1, 1, 1, 1);
+                //imageView.setPadding(1, 1, 1, 1);
             } else {
                 imageView = (ImageView) convertView;
             }
@@ -66,7 +64,7 @@ import java.util.HashMap;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (finalImageUrl != "Nothing"){
+            if (!finalImageUrl.equals("Nothing")){
 
                 //A forward slash is replaced during uri building for some reason
                 //to the encoded value
@@ -75,12 +73,4 @@ import java.util.HashMap;
             }
             return imageView;
         }
-
-        
-
-        // references to our images
-        private String[] mImageUrls = {
-                "http://www.iconsdb.com/icons/preview/yellow/square-xxl.png",
-                "http://vignette2.wikia.nocookie.net/deathbattlefanon/images/6/6c/The_Flash.jpg/revision/latest?cb=20140816134052"
-        };
     }
