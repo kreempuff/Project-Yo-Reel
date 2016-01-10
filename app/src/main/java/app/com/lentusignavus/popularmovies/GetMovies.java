@@ -17,7 +17,7 @@ import java.net.URL;
 /**
  * Created by kare2436 on 12/31/15.
  */
-public class GetMovies extends AsyncTask<Void, Void, JSONObject> {
+public class GetMovies extends AsyncTask<String, Void, JSONObject> {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -41,7 +41,7 @@ public class GetMovies extends AsyncTask<Void, Void, JSONObject> {
     }
 
     @Override
-    protected JSONObject doInBackground(Void... params) {
+    protected JSONObject doInBackground(String... sort) {
 
 
         try {
@@ -51,7 +51,7 @@ public class GetMovies extends AsyncTask<Void, Void, JSONObject> {
                     .appendPath("discover")
                     .appendPath("movie")
                     .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
-                    .appendQueryParameter("sort_by", "popularity.desc")
+                    .appendQueryParameter("sort_by", sort[0])
                     .build();
 
             URL builtUrl = new URL(apiUrl.toString());

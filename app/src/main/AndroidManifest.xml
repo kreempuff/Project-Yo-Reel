@@ -21,7 +21,9 @@
         <activity android:name=".DetailViewActivity"
             android:parentActivityName=".MainActivity">
 
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
         <service android:name=".GetMoviesService"></service>

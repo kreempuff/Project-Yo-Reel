@@ -3,4 +3,6 @@
     <string name="basic_image">basic image</string>
     <string name="practice_image_desc">This is a practice image</string>
     <string name="movie_poster">Movie Poster</string>
+    <string name="sort_by_popularity">Sort By Popularity</string>
+    <string name="sort_by_votes">Sort By Votes</string>
 </resources>
