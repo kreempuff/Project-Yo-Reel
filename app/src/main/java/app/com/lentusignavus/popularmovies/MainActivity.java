@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +27,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     ArrayAdapter<String> imageAdapter;
     GridView mgridView;
     Intent detailView;
+    String sort;
+    GetMovies getMovies;
+    final String vote_sort = "vote_count.desc";
+    final String pop_sort = "popularity.desc";
 
 
 
@@ -36,13 +42,14 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         setSupportActionBar(toolbar);
 
          mgridView = (GridView) findViewById(R.id.gridview);
+        sort = pop_sort;
 
 
         //mgridView.setAdapter(new ImageAdapter(this));
 
-        GetMovies getMovies = new GetMovies(this);
+        getMovies = new GetMovies(this);
 
-        getMovies.execute();
+        getMovies.execute(sort);
 
     }
 
@@ -56,6 +63,39 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     protected void onPause() {
         super.onPause();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case (R.id.popular_option_id):
+                if(sort == pop_sort) {
+                    break;
+                } else {
+                    sort = pop_sort;
+                    getMovies = new GetMovies(this);
+                    getMovies.execute(sort);
+                    break;
+                }
+            case (R.id.vote_option_id):
+                if(sort == vote_sort) {
+                    break;
+                } else {
+                    sort = vote_sort;
+                    getMovies = new GetMovies(this);
+                    getMovies.execute(sort);
+                    break;
+                }
+        }
+        return true;
     }
 
     @Override
