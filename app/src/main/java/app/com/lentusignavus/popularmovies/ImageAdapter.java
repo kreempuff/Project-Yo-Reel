@@ -45,11 +45,11 @@ import java.util.HashMap;
         public View getView(int index, View convertView, ViewGroup parent) {
             ImageView imageView;
             Uri imageUrl = Uri.parse(ApiInfo.getImageBaseUrl());
-            String finalImageUrl = "Nothing";
+            String finalImageUrl = null;
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(650, 650));
+                imageView.setLayoutParams(new GridView.LayoutParams(650, 850));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 //imageView.setPadding(1, 1, 1, 1);
             } else {
@@ -64,10 +64,10 @@ import java.util.HashMap;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (!finalImageUrl.equals("Nothing")){
+            if (!finalImageUrl.equals(null)) {
 
                 //A forward slash is replaced during uri building for some reason
-                //to the encoded value
+                //to the encoded value and the api doesn't accept encoded values
                 finalImageUrl = finalImageUrl.replaceAll("%2F", "/");
                 Picasso.with(mContext).load(finalImageUrl).into(imageView);
             }

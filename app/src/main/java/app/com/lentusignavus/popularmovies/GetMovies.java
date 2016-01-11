@@ -103,7 +103,6 @@ public class GetMovies extends AsyncTask<String, Void, JSONObject> {
                     Log.e(TAG, "Error closing stream", e);
                 }
             }
-            Log.d(TAG + " DONE", movieData);
         }
 
         jsonHandler = new JSONHandler();

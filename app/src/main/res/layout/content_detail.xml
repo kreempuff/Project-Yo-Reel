@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent">
@@ -17,21 +18,25 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/image_margin"
+            android:layout_height="100dp"
+            android:layout_marginTop="@dimen/detail_view_image_margin"
             android:src="@mipmap/ic_launcher"
             android:id="@+id/big_image_poster"
+
             android:contentDescription="@string/movie_poster" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/some_placholder_text"
             style="@style/TextAppearance.AppCompat.Headline"
             android:gravity="center_horizontal"
             android:id="@+id/movie_title"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/some_placholder_text"
             android:id="@+id/movie_description"/>
 
     </LinearLayout>
+
 </ScrollView>

@@ -27,9 +27,10 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     ArrayAdapter<String> imageAdapter;
     GridView mgridView;
     Intent detailView;
+    Intent intent;
     String sort;
     GetMovies getMovies;
-    final String vote_sort = "vote_count.desc";
+    final String vote_sort = "vote_average.desc";
     final String pop_sort = "popularity.desc";
 
 
@@ -41,8 +42,13 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        GetMoviesService moviesService = new GetMoviesService("Dreamer");
+
+        intent = new Intent(this, GetMoviesService.class);
+
+        startService(intent);
          mgridView = (GridView) findViewById(R.id.gridview);
-        sort = pop_sort;
+         sort = pop_sort;
 
 
         //mgridView.setAdapter(new ImageAdapter(this));
@@ -50,18 +56,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         getMovies = new GetMovies(this);
 
         getMovies.execute(sort);
-
-    }
-
-    public void showToast(View v) {
-        String imageDescription = (String) v.getContentDescription();
-        imageUrl = imageBaseUrl + sizes.get("w185").toString() + "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
-        Toast.makeText(getApplication(), imageUrl, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
 
     }
 
@@ -101,30 +95,44 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
         final JSONArray jsonArrayOfMovies = jsonObject.getJSONArray("results");
+
         mgridView.setAdapter(new ImageAdapter(this, jsonArrayOfMovies));
         mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String movieTitle = "";
-                String movieImagePath = "";
-                String movieDescription = "";
+                JSONObject movie = null;
                 try {
-                   movieTitle = jsonArrayOfMovies.getJSONObject(position).getString("original_title");
-                   movieImagePath = jsonArrayOfMovies.getJSONObject(position).getString("poster_path");
-                   movieDescription = jsonArrayOfMovies.getJSONObject(position).getString("overview");
+                    movie = jsonArrayOfMovies.getJSONObject(position);
                 } catch (JSONException e) {
                     Log.e(getLocalClassName(), "MainActivity.OnItemClickListener", e);
                 }
+
+                String movieTitle = "";
+                String movieImagePath = "";
+                String movieDescription = "";
+                Double movieVoteAverage = null;
+                String movieReleaseDate = "";
+
                 try {
-                    Toast.makeText(getApplicationContext(), jsonArrayOfMovies.getJSONObject(position).getString("original_title"), Toast.LENGTH_SHORT)
-                            .show();
+                   movieTitle = movie.getString("original_title");
+                   movieImagePath = movie.getString("poster_path");
+                   movieDescription = movie.getString("overview");
+                   movieVoteAverage = movie.getDouble("vote_average");
+                   movieReleaseDate = movie.getString("release_date");
+
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e(getLocalClassName(), "MainActivity.OnItemClickListener", e);
                 }
+                    Toast
+                       .makeText(getApplicationContext(), movieTitle, Toast.LENGTH_SHORT)
+                       .show();
+
                 detailView = new Intent(getApplication(), DetailViewActivity.class);
                 detailView.putExtra("title", movieTitle);
                 detailView.putExtra("imagePath", movieImagePath);
                 detailView.putExtra("description", movieDescription);
+                detailView.putExtra("vote_avg", movieVoteAverage);
+                detailView.putExtra("release_date", movieReleaseDate);
                 startActivity(detailView);
             }
         });

@@ -8,15 +8,20 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 public class DetailViewActivity extends AppCompatActivity {
 
     Bundle extras;
     String movieTitle = "";
     String movieImagePath = "";
     String movieDescription = "";
+    Double voteAverage = null;
+    String releaseDate = null;
 
     TextView movieTitleView;
     TextView movieDescriptionView;
+    TextView voteAverageView;
     ImageView moviePosterView;
     Toolbar detailToolbar;
 
@@ -38,6 +43,11 @@ public class DetailViewActivity extends AppCompatActivity {
             movieTitle = extras.getString("title");
             movieImagePath = extras.getString("imagePath");
             movieDescription = extras.getString("description");
+            voteAverage = extras.getDouble("vote_avg");
+            releaseDate = extras.getString("release_date");
+
+
+
             getSupportActionBar().setTitle(movieTitle);
 
 
