@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GetMoviesService moviesService = new GetMoviesService("Dreamer");
+        GetMoviesService moviesService = new GetMoviesService(this);
 
         intent = new Intent(this, GetMoviesService.class);
 
