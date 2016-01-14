@@ -8,8 +8,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DetailViewActivity extends AppCompatActivity {
 
@@ -32,7 +35,8 @@ public class DetailViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
         moviePosterView = (ImageView) findViewById(R.id.big_image_poster);
-//        movieTitleView = (TextView) findViewById(R.id.movie_title);
+        //May be used in P2 to display title instead of toolbar
+        //movieTitleView = (TextView) findViewById(R.id.movie_title);
         movieDescriptionView = (TextView) findViewById(R.id.movie_description);
         voteAverageView = (TextView) findViewById(R.id.movie_vote_average);
         releaseDateView = (TextView) findViewById(R.id.movie_release_date);
@@ -51,15 +55,22 @@ public class DetailViewActivity extends AppCompatActivity {
             voteAverage = extras.getDouble("vote_avg");
             releaseDate = extras.getString("release_date");
 
+
             getSupportActionBar().setTitle(movieTitle);
 
             //TODO make date format more user friendly
             Picasso.with(this).load(ApiInfo.getImageBaseUrl() + "w780" + movieImagePath).into(moviePosterView);
-//            movieTitleView.setText(movieTitle);
+            //movieTitleView.setText(movieTitle);
             movieDescriptionView.setText(movieDescription);
-            voteAverageView.setText(voteAverage.toString());
-            releaseDateView.setText(releaseDate);
+            voteAverageView.setText("Vote Average: " + voteAverage.toString());
+            releaseDateView.setText("Release Date: " + releaseDate);
         }
 
+    }
+
+
+
+    private int getIntegerFromText(String textNumber){
+        return Integer.parseInt(textNumber);
     }
 }

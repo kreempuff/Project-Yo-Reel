@@ -22,7 +22,6 @@ import java.util.HashMap;
 
         private Context mContext;
         private JSONArray movieJsonArray;
-        private HashMap imageSizes = ImageSize.getSizes();
 
         public ImageAdapter(Context c, JSONArray jsonArray) {
             mContext = c;

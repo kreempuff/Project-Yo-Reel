@@ -19,15 +19,32 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+
+/*IMPORTANT
+
+ApiInfo is a java file/class that contains all the info for the api that was added to the gitignore file. Including the keys
+So it may not run correctly unless you include a public class like this
+
+public class ApiInfo {
+    public static String getMoviedbKey() {
+        String moviedbKey = <your api key here>;
+        return moviedbKey;
+    }
+    public static String getImageBaseUrl(){
+        String url = "http://image.tmdb.org/t/p/";
+        return url;
+    }
+    public static String getApiBaseUrl() {
+        String url = "http://api.themoviedb.org/3";
+        return url;
+    }
+}
+
+ */
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
-    String imageBaseUrl = "http://image.tmbd.org/t/p/";
-    HashMap sizes = ImageSize.getSizes();
-    String imageUrl;
-    ArrayAdapter<String> imageAdapter;
     GridView mgridView;
     Intent detailView;
-    Intent intent;
     String sort;
     GetMovies getMovies;
     final String vote_sort = "vote_average.desc";
@@ -41,17 +58,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mgridView = (GridView) findViewById(R.id.gridview);
+        sort = pop_sort;
 
-        GetMoviesService moviesService = new GetMoviesService(this);
-
-        intent = new Intent(this, GetMoviesService.class);
-
-        startService(intent);
-         mgridView = (GridView) findViewById(R.id.gridview);
-         sort = pop_sort;
-
-
-        //mgridView.setAdapter(new ImageAdapter(this));
 
         getMovies = new GetMovies(this);
 

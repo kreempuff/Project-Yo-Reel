@@ -26,7 +26,6 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <service android:name=".GetMoviesService"></service>
     </application>
 
 </manifest>
