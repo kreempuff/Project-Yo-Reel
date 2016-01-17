@@ -14,6 +14,9 @@ import java.text.ParsePosition;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class DetailViewActivity extends AppCompatActivity {
 
     Bundle extras;
@@ -24,7 +27,7 @@ public class DetailViewActivity extends AppCompatActivity {
     String releaseDate = null;
 
     TextView movieTitleView;
-    TextView movieDescriptionView;
+    @Bind(R.id.movie_description)TextView movieDescriptionView;
     TextView voteAverageView;
     TextView releaseDateView;
     ImageView moviePosterView;
@@ -34,10 +37,11 @@ public class DetailViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
+        ButterKnife.bind(this);
         moviePosterView = (ImageView) findViewById(R.id.big_image_poster);
         //May be used in P2 to display title instead of toolbar
         //movieTitleView = (TextView) findViewById(R.id.movie_title);
-        movieDescriptionView = (TextView) findViewById(R.id.movie_description);
+        //movieDescriptionView = (TextView) findViewById(R.id.movie_description);
         voteAverageView = (TextView) findViewById(R.id.movie_vote_average);
         releaseDateView = (TextView) findViewById(R.id.movie_release_date);
 

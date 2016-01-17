@@ -19,6 +19,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 /*IMPORTANT
 
@@ -43,7 +46,8 @@ public class ApiInfo {
  */
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
-    GridView mgridView;
+    @Bind(R.id.gridview) GridView mgridView;
+    @Bind(R.id.toolbar) Toolbar toolbar;
     Intent detailView;
     String sort;
     GetMovies getMovies;
@@ -56,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        mgridView = (GridView) findViewById(R.id.gridview);
+
         sort = pop_sort;
 
 
