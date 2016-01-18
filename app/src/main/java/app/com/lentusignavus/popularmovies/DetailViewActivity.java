@@ -3,6 +3,7 @@ package app.com.lentusignavus.popularmovies;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,32 +21,28 @@ import butterknife.ButterKnife;
 public class DetailViewActivity extends AppCompatActivity {
 
     Bundle extras;
-    String movieTitle = "";
-    String movieImagePath = "";
-    String movieDescription = "";
+    String movieTitle = null;
+    String movieImagePath = null;
+    String movieDescription = null;
     Double voteAverage = null;
     String releaseDate = null;
 
     TextView movieTitleView;
     @Bind(R.id.movie_description)TextView movieDescriptionView;
-    TextView voteAverageView;
-    TextView releaseDateView;
-    ImageView moviePosterView;
-    Toolbar detailToolbar;
+    @Bind(R.id.movie_vote_average) TextView voteAverageView;
+    @Bind(R.id.movie_release_date) TextView releaseDateView;
+    @Bind(R.id.big_image_poster) ImageView moviePosterView;
+    @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
         ButterKnife.bind(this);
-        moviePosterView = (ImageView) findViewById(R.id.big_image_poster);
         //May be used in P2 to display title instead of toolbar
         //movieTitleView = (TextView) findViewById(R.id.movie_title);
-        //movieDescriptionView = (TextView) findViewById(R.id.movie_description);
-        voteAverageView = (TextView) findViewById(R.id.movie_vote_average);
-        releaseDateView = (TextView) findViewById(R.id.movie_release_date);
 
-        detailToolbar = (Toolbar) findViewById(R.id.detail_view_toolbar);
 
         setSupportActionBar(detailToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,8 +70,11 @@ public class DetailViewActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-    private int getIntegerFromText(String textNumber){
-        return Integer.parseInt(textNumber);
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
+
 }

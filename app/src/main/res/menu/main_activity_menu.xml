@@ -7,4 +7,7 @@
     <item android:orderInCategory="200"
         android:title="@string/sort_by_votes"
         android:id="@+id/vote_option_id"></item>
+    <item android:orderInCategory="500"
+        android:title="@string/settings_title"
+        android:id="@+id/settings_option"></item>
 </menu>

@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.loopj.android.http.AsyncHttpClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -130,4 +132,6 @@ public class GetMovies extends AsyncTask<String, Void, JSONObject> {
         return;
 
     }
+
+
 }

@@ -6,4 +6,5 @@
     <string name="sort_by_popularity">Sort By Popularity</string>
     <string name="sort_by_votes">Sort By Votes</string>
     <string name="some_placholder_text">Some placholder Text</string>
+    <string name="settings_title">Settings</string>
 </resources>

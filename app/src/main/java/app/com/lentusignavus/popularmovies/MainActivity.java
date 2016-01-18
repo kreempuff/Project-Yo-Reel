@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.loopj.android.http.*;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,29 +23,9 @@ import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 
-/*IMPORTANT
-
-ApiInfo is a java file/class that contains all the info for the api that was added to the gitignore file. Including the keys
-So it may not run correctly unless you include a public class like this
-
-public class ApiInfo {
-    public static String getMoviedbKey() {
-        String moviedbKey = <your api key here>;
-        return moviedbKey;
-    }
-    public static String getImageBaseUrl(){
-        String url = "http://image.tmdb.org/t/p/";
-        return url;
-    }
-    public static String getApiBaseUrl() {
-        String url = "http://api.themoviedb.org/3";
-        return url;
-    }
-}
-
- */
 public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     @Bind(R.id.gridview) GridView mgridView;
@@ -69,6 +51,32 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         getMovies = new GetMovies(this);
 
         getMovies.execute(sort);
+
+
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(ApiInfo.getApiBaseUrl(), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // If the response is JSONObject instead of expected JSONArray
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray mov) {
+                // Pull out the first event on the public timeline
+                JSONObject firstEvent = timeline.get(0);
+                String tweetText = firstEvent.getString("text");
+
+                // Do something with the response
+                System.out.println(tweetText);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
 
     }
 
@@ -101,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                     getMovies.execute(sort);
                     break;
                 }
+            case (R.id.settings_option):
+                startActivity(new Intent(this, Settings.class));
         }
         return true;
     }
@@ -151,4 +161,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         });
 
     }
+
+
 }
