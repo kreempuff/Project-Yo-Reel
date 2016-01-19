@@ -1,13 +1,24 @@
 package app.com.lentusignavus.popularmovies;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
@@ -17,15 +28,17 @@ import java.util.GregorianCalendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 public class DetailViewActivity extends AppCompatActivity {
 
     Bundle extras;
-    String movieTitle = null;
-    String movieImagePath = null;
-    String movieDescription = null;
-    Double voteAverage = null;
-    String releaseDate = null;
+    String movieTitle;
+    String movieImagePath;
+    String movieDescription;
+    Double voteAverage;
+    String releaseDate;
+    String movieId;
 
     TextView movieTitleView;
     @Bind(R.id.movie_description)TextView movieDescriptionView;
@@ -33,6 +46,8 @@ public class DetailViewActivity extends AppCompatActivity {
     @Bind(R.id.movie_release_date) TextView releaseDateView;
     @Bind(R.id.big_image_poster) ImageView moviePosterView;
     @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
+    @Bind(R.id.temp_button) Button tempButton;
+    String youtubeVidId;
 
 
     @Override
@@ -55,6 +70,9 @@ public class DetailViewActivity extends AppCompatActivity {
             movieDescription = extras.getString("description");
             voteAverage = extras.getDouble("vote_avg");
             releaseDate = extras.getString("release_date");
+            movieId = extras.getString("movie_id");
+
+            getMovieTrailers(movieId);
 
 
             getSupportActionBar().setTitle(movieTitle);
@@ -69,12 +87,64 @@ public class DetailViewActivity extends AppCompatActivity {
 
     }
 
+    private void getMovieTrailers(String movieId) {
+        Uri url = Uri.parse(ApiInfo.getApiBaseUrl())
+                .buildUpon()
+                .appendPath("movie")
+                .appendPath(movieId)
+                .appendPath("videos")
+                .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
+                .build();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(url.toString(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+                    youtubeVidId = response.getJSONArray("results").getJSONObject(0).getString("key");
+                    tempButton.setText(youtubeVidId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(getLocalClassName(), response.toString());
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+
+                Log.d(getLocalClassName(), response.toString());
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                throwable.printStackTrace();
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    private void startYoutubeActivity (View v){
+
+
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(("http://www.youtube.com/watch?v=" + youtubeVidId))));
+
     }
 
 }

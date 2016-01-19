@@ -69,6 +69,17 @@
             android:text="@string/some_placholder_text"
             android:id="@+id/movie_description"/>
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trailers"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Trailer"
+        android:id="@+id/temp_button"
+        />
     </LinearLayout>
 
 

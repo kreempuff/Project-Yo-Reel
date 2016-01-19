@@ -54,30 +54,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
 
 
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.get(ApiInfo.getApiBaseUrl(), new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // If the response is JSONObject instead of expected JSONArray
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray mov) {
-                // Pull out the first event on the public timeline
-                JSONObject firstEvent = timeline.get(0);
-                String tweetText = firstEvent.getString("text");
-
-                // Do something with the response
-                System.out.println(tweetText);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-            }
-        });
-
     }
 
     @Override
@@ -120,21 +96,28 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         final JSONArray jsonArrayOfMovies = jsonObject.getJSONArray("results");
 
         mgridView.setAdapter(new ImageAdapter(this, jsonArrayOfMovies));
+
         mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                JSONObject movie = null;
+                JSONObject movie;
+
+                String movieTitle = null;
+                String movieImagePath = null;
+                String movieDescription = null;
+                Double movieVoteAverage = null;
+                String movieReleaseDate = null;
+                String movieID = null;
+
                 try {
                     movie = jsonArrayOfMovies.getJSONObject(position);
+                    Log.d(getLocalClassName(), movie.toString());
                 } catch (JSONException e) {
                     Log.e(getLocalClassName(), "MainActivity.OnItemClickListener", e);
+                    return;
                 }
 
-                String movieTitle = "";
-                String movieImagePath = "";
-                String movieDescription = "";
-                Double movieVoteAverage = null;
-                String movieReleaseDate = "";
+
 
                 try {
                    movieTitle = movie.getString("original_title");
@@ -142,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                    movieDescription = movie.getString("overview");
                    movieVoteAverage = movie.getDouble("vote_average");
                    movieReleaseDate = movie.getString("release_date");
+                   movieID = movie.getString("id");
+
 
                 } catch (JSONException e) {
                     Log.e(getLocalClassName(), "MainActivity.OnItemClickListener", e);
@@ -156,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
                 detailView.putExtra("description", movieDescription);
                 detailView.putExtra("vote_avg", movieVoteAverage);
                 detailView.putExtra("release_date", movieReleaseDate);
+                detailView.putExtra("movie_id", movieID);
                 startActivity(detailView);
             }
         });
