@@ -8,9 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -23,8 +28,10 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,6 +46,7 @@ public class DetailViewActivity extends AppCompatActivity {
     Double voteAverage;
     String releaseDate;
     String movieId;
+    TrailerAdapter adapter;
 
     TextView movieTitleView;
     @Bind(R.id.movie_description)TextView movieDescriptionView;
@@ -46,8 +54,8 @@ public class DetailViewActivity extends AppCompatActivity {
     @Bind(R.id.movie_release_date) TextView releaseDateView;
     @Bind(R.id.big_image_poster) ImageView moviePosterView;
     @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
-    @Bind(R.id.temp_button) Button tempButton;
-    String youtubeVidId;
+    @Bind(R.id.trailer_list_view) ListView listView;
+    JSONArray youtubeVids;
 
 
     @Override
@@ -55,6 +63,7 @@ public class DetailViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
         ButterKnife.bind(this);
+
         //May be used in P2 to display title instead of toolbar
         //movieTitleView = (TextView) findViewById(R.id.movie_title);
 
@@ -87,7 +96,7 @@ public class DetailViewActivity extends AppCompatActivity {
 
     }
 
-    private void getMovieTrailers(String movieId) {
+    private void getMovieTrailers(final String movieId) {
         Uri url = Uri.parse(ApiInfo.getApiBaseUrl())
                 .buildUpon()
                 .appendPath("movie")
@@ -104,10 +113,31 @@ public class DetailViewActivity extends AppCompatActivity {
 
 
                 try {
-                    youtubeVidId = response.getJSONArray("results").getJSONObject(0).getString("key");
-                    tempButton.setText(youtubeVidId);
+                    youtubeVids = response.getJSONArray("results");
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+
+                if(youtubeVids != null){
+                    adapter = new TrailerAdapter(youtubeVids, getApplicationContext());
+
+                    listView.setAdapter(adapter);
+
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Uri youtube = Uri.parse("http://www.youtube.com/")
+                                    .buildUpon()
+                                    .appendPath("watch")
+                                    .appendQueryParameter("v", ((Button) view).getText().toString())
+                                    .build();
+                            Toast.makeText(getApplicationContext(), "Hey", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Intent.ACTION_VIEW, youtube));
+                        }
+                    });
+
                 }
 
                 Log.d(getLocalClassName(), response.toString());
@@ -139,12 +169,5 @@ public class DetailViewActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
-    private void startYoutubeActivity (View v){
-
-
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(("http://www.youtube.com/watch?v=" + youtubeVidId))));
-
-    }
 
 }
