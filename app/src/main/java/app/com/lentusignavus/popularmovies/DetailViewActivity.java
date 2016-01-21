@@ -145,13 +145,6 @@ public class DetailViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
-                Log.d(getLocalClassName(), response.toString());
-                super.onSuccess(statusCode, headers, response);
-            }
-
-            @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
                 throwable.printStackTrace();

@@ -1,6 +1,8 @@
 package app.com.lentusignavus.popularmovies;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -19,6 +21,7 @@ import org.json.JSONException;
 public class TrailerAdapter extends BaseAdapter {
     private JSONArray trailerArray;
     private Context mContext;
+    private LayoutInflater inflater;
 
 
 
@@ -45,27 +48,28 @@ public class TrailerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Button textView;
+        TextView textView;
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null){
-            textView = new Button(mContext);
+            textView = new TextView(mContext, );
+            textView = (TextView) inflater.inflate(R.layout.custom_text, null);
+
             try {
                 textView.setText(trailerArray.getJSONObject(position).getString("key"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            textView.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, ListView.LayoutParams.WRAP_CONTENT));
+
 
 
         } else {
 
-            textView = (Button) convertView;
+            textView = (TextView) convertView;
 
         }
 
 
-
-
-
+        Log.d(getClass().getSimpleName(), textView.toString());
         return textView;
     }
 }
