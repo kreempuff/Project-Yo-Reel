@@ -8,12 +8,15 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import butterknife.Bind;
 
 /**
  * Created by kare2436 on 1/19/16.
@@ -48,28 +51,26 @@ public class TrailerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        View v;
         TextView textView;
-        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         if (convertView == null){
-            textView = new TextView(mContext, );
-            textView = (TextView) inflater.inflate(R.layout.custom_text, null);
+//            textView = new TextView(mContext);
+
+            v = LayoutInflater.from(mContext).inflate(R.layout.trailer_list_item, null);
+            //v = inflater.inflate(R.layout.trailer_list_item, null);
+            textView = (TextView) v.findViewById(R.id.trailer_list_text_view);
 
             try {
                 textView.setText(trailerArray.getJSONObject(position).getString("key"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-
         } else {
-
-            textView = (TextView) convertView;
-
+            v = convertView;
         }
 
 
-        Log.d(getClass().getSimpleName(), textView.toString());
-        return textView;
+        return v;
     }
 }

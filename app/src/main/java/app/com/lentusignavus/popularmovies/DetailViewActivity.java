@@ -97,7 +97,7 @@ public class DetailViewActivity extends AppCompatActivity {
     }
 
     private void getMovieTrailers(final String movieId) {
-        Uri url = Uri.parse(ApiInfo.getApiBaseUrl())
+        Uri trailerUrl = Uri.parse(ApiInfo.getApiBaseUrl())
                 .buildUpon()
                 .appendPath("movie")
                 .appendPath(movieId)
@@ -105,9 +105,17 @@ public class DetailViewActivity extends AppCompatActivity {
                 .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
                 .build();
 
+        Uri reviewUrl = Uri.parse(ApiInfo.getApiBaseUrl())
+                .buildUpon()
+                .appendPath("movie")
+                .appendPath(movieId)
+                .appendPath("reviews")
+                .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
+                .build();
+
         AsyncHttpClient client = new AsyncHttpClient();
 
-        client.get(url.toString(), new JsonHttpResponseHandler(){
+        client.get(trailerUrl.toString(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -131,9 +139,9 @@ public class DetailViewActivity extends AppCompatActivity {
                             Uri youtube = Uri.parse("http://www.youtube.com/")
                                     .buildUpon()
                                     .appendPath("watch")
-                                    .appendQueryParameter("v", ((Button) view).getText().toString())
+                                    .appendQueryParameter("v", ((TextView) view.findViewById(R.id.trailer_list_text_view)).getText().toString())
                                     .build();
-                            Toast.makeText(getApplicationContext(), "Hey", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), youtube.toString(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Intent.ACTION_VIEW, youtube));
                         }
                     });
@@ -151,6 +159,23 @@ public class DetailViewActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+
+        /*client.get(reviewUrl.toString(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                //Toast.makeText(getBaseContext(), response.toString(), Toast.LENGTH_LONG).show();
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+        */
+
 
     }
 
