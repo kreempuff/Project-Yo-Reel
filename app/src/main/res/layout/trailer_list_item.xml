@@ -6,15 +6,16 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_play_circle_filled_black_36dp"
         android:layout_weight="1"/>
     <TextView
         android:id="@+id/trailer_list_text_view"
         android:layout_height="wrap_content"
+        android:padding="@dimen/main_view_padding"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:text="Sample"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="12sp"
-        android:layout_weight="1"/>
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/text_size"
+        android:layout_weight="3"/>
 </LinearLayout>

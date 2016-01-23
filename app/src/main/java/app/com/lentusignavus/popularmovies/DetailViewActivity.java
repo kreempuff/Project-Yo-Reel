@@ -160,12 +160,12 @@ public class DetailViewActivity extends AppCompatActivity {
             }
         });
 
-        /*client.get(reviewUrl.toString(), new JsonHttpResponseHandler(){
+        client.get(reviewUrl.toString(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 
-                //Toast.makeText(getBaseContext(), response.toString(), Toast.LENGTH_LONG).show();
+                Log.d(getClass().getSimpleName().toString(), response.toString());
                 super.onSuccess(statusCode, headers, response);
             }
 
@@ -174,7 +174,7 @@ public class DetailViewActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
-        */
+
 
 
     }

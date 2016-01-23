@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
                 try {
                     movie = jsonArrayOfMovies.getJSONObject(position);
-                    Log.d(getLocalClassName(), movie.toString());
                 } catch (JSONException e) {
                     Log.e(getLocalClassName(), "MainActivity.OnItemClickListener", e);
                     return;
