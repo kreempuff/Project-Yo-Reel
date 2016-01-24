@@ -24,7 +24,6 @@ import butterknife.Bind;
 public class TrailerAdapter extends BaseAdapter {
     private JSONArray trailerArray;
     private Context mContext;
-    private LayoutInflater inflater;
 
 
 
@@ -55,11 +54,12 @@ public class TrailerAdapter extends BaseAdapter {
         TextView textView;
 
         if (convertView == null){
-//            textView = new TextView(mContext);
+//
 
             v = LayoutInflater.from(mContext).inflate(R.layout.trailer_list_item, null);
-            //v = inflater.inflate(R.layout.trailer_list_item, null);
             textView = (TextView) v.findViewById(R.id.trailer_list_text_view);
+
+            Toast.makeText(mContext, "Trailer Adapter", Toast.LENGTH_SHORT).show();
 
             try {
                 textView.setText(trailerArray.getJSONObject(position).getString("key"));

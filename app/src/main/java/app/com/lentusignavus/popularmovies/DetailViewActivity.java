@@ -37,7 +37,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-public class DetailViewActivity extends AppCompatActivity {
+public class DetailViewActivity extends AppCompatActivity implements DetailFragment.OnFragmentInteractionListener {
 
     Bundle extras;
     String movieTitle;
@@ -129,6 +129,8 @@ public class DetailViewActivity extends AppCompatActivity {
                 if(youtubeVids != null){
                     adapter = new TrailerAdapter(youtubeVids, getApplicationContext());
 
+                    //Toast.makeText(getApplicationContext(), youtubeVids.toString(), Toast.LENGTH_LONG).show();
+
                     listView.setAdapter(adapter);
 
 
@@ -141,7 +143,6 @@ public class DetailViewActivity extends AppCompatActivity {
                                     .appendPath("watch")
                                     .appendQueryParameter("v", ((TextView) view.findViewById(R.id.trailer_list_text_view)).getText().toString())
                                     .build();
-                            Toast.makeText(getApplicationContext(), youtube.toString(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Intent.ACTION_VIEW, youtube));
                         }
                     });
@@ -155,7 +156,7 @@ public class DetailViewActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 
-                throwable.printStackTrace();
+                Toast.makeText(getApplicationContext(), responseString, Toast.LENGTH_SHORT).show();
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
@@ -165,7 +166,6 @@ public class DetailViewActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
 
-                Log.d(getClass().getSimpleName().toString(), response.toString());
                 super.onSuccess(statusCode, headers, response);
             }
 
@@ -188,4 +188,8 @@ public class DetailViewActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        return;
+    }
 }

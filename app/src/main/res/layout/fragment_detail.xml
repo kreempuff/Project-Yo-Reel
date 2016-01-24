@@ -11,7 +11,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    tools:context="app.com.lentusignavus.popularmovies.DetailFragment">
+    tools:context=".DetailViewActivity">
+
+    <!--tools:context="app.com.lentusignavus.popularmovies.DetailViewActivity"-->
+
     <!--<TextView-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
@@ -78,12 +81,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/text_size"
         android:text="Trailers"/>
+
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/trailer_list_view"
-        />
+        android:divider="@color/text_color"/>
+
 </LinearLayout>
 
 

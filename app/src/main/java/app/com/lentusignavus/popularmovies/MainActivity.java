@@ -1,6 +1,7 @@
 package app.com.lentusignavus.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
+public class MainActivity extends AppCompatActivity implements OnTaskCompleted, MainFragment.OnFragmentInteractionListener {
 
     @Bind(R.id.gridview) GridView mgridView;
     @Bind(R.id.toolbar) Toolbar toolbar;
@@ -152,4 +153,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        return;
+    }
 }
