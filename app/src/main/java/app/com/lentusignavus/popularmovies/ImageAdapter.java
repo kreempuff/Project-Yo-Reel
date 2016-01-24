@@ -1,7 +1,7 @@
 package app.com.lentusignavus.popularmovies;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,17 +9,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.HashMap;
 
-
-    public class ImageAdapter extends BaseAdapter {
+public class ImageAdapter extends BaseAdapter {
 
         private Context mContext;
         private JSONArray movieJsonArray;
@@ -43,14 +41,27 @@ import java.util.HashMap;
 
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int index, View convertView, ViewGroup parent) {
+
+//             For custom grid item
+//            View v = LayoutInflater.from(mContext).inflate(R.layout.movie_grid_item, null);
+//            ImageView imageView = (ImageView) v.findViewById(R.id.movie_grid_item_image);
+//            TextView textView = (TextView) v.findViewById(R.id.movie_grid_item_text);
+
+            int size = ((GridView) parent).getColumnWidth();
             ImageView imageView;
+
             Uri imageUrl = Uri.parse(ApiInfo.getImageBaseUrl());
             String finalImageUrl = null;
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
+
+
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(650, 850));
+                imageView.setLayoutParams(new GridView.LayoutParams( size, (size*2) ));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                //textView.setLayoutParams(new GridView.LayoutParams(size, ViewGroup.LayoutParams.WRAP_CONTENT));
+
                 //imageView.setPadding(1, 1, 1, 1);
             } else {
                 imageView = (ImageView) convertView;
@@ -71,6 +82,8 @@ import java.util.HashMap;
                 finalImageUrl = finalImageUrl.replaceAll("%2F", "/");
                 Picasso.with(mContext).load(finalImageUrl).into(imageView);
             }
+
+
             return imageView;
         }
     }

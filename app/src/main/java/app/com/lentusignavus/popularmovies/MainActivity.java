@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompleted, MainFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements OnTaskCompleted, MainFragment.OnFragmentInteractionListener, DetailFragment.OnFragmentInteractionListener {
 
     @Bind(R.id.gridview) GridView mgridView;
     @Bind(R.id.toolbar) Toolbar toolbar;
@@ -48,52 +48,6 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted, 
         setSupportActionBar(toolbar);
 
 
-        sort = pop_sort;
-
-
-        getMovies = new GetMovies(this);
-
-        getMovies.execute(sort);
-
-
-
-
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
-
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case (R.id.popular_option_id):
-                if(sort == pop_sort) {
-                    break;
-                } else {
-                    sort = pop_sort;
-                    getMovies = new GetMovies(this);
-                    getMovies.execute(sort);
-                    break;
-                }
-            case (R.id.vote_option_id):
-                if(sort == vote_sort) {
-                    break;
-                } else {
-                    sort = vote_sort;
-                    getMovies = new GetMovies(this);
-                    getMovies.execute(sort);
-                    break;
-                }
-            case (R.id.settings_option):
-                startActivity(new Intent(this, Settings.class));
-        }
-        return true;
     }
 
     @Override

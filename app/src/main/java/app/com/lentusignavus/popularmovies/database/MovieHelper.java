@@ -26,7 +26,7 @@ public class MovieHelper extends SQLiteOpenHelper {
 
                 MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY, " +
 
-                MovieContract.MovieEntry.COLUMN_TITLE + " TEXT," +
+                MovieContract.MovieEntry.COLUMN_TITLE + " TEXT, " +
 
                 MovieContract.MovieEntry.COLUMN_DESC + " TEXT, " +
 
