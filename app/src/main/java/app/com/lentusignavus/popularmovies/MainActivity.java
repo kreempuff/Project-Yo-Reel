@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import app.com.lentusignavus.popularmovies.database.MovieHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
@@ -45,12 +46,15 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+
         sort = pop_sort;
 
 
         getMovies = new GetMovies(this);
 
         getMovies.execute(sort);
+
+
 
 
 

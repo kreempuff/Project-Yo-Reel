@@ -1,0 +1,24 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_main"
+    tools:context=".MainFragment"
+    android:paddingTop="@dimen/main_view_padding"
+    android:paddingBottom="@dimen/main_view_padding"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center_horizontal">
+
+    </GridView>
+
+</FrameLayout>
