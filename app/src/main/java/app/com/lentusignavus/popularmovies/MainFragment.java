@@ -232,6 +232,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 }
             case (R.id.settings_option):
                 startActivity(new Intent(getContext(), Settings.class));
+                break;
+            case (R.id.favorite_movie_option):
+                break;
         }
         return true;
     }

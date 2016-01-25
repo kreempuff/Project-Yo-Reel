@@ -188,6 +188,30 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
     }
 
 
+
+    public void favoriteMovie(View v){
+
+        FavoriteMovie newFavMov = new FavoriteMovie();
+
+        newFavMov.title = movieTitle;
+        newFavMov.description = movieDescription;
+        newFavMov.movieId = movieId;
+        newFavMov.imagePath = movieImagePath;
+        newFavMov.voteAverage = voteAverage;
+        newFavMov.releaseDate = releaseDate;
+
+        newFavMov.save();
+
+
+        List list = (List) FavoriteMovie.findAll(FavoriteMovie.class);
+        Toast.makeText(getApplicationContext(), list.toString(), Toast.LENGTH_SHORT).show();
+
+        return;
+
+    }
+
+
+
     @Override
     public void onFragmentInteraction(Uri uri) {
         return;

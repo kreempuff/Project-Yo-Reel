@@ -62,6 +62,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="favoriteMovie"
                 android:src="@drawable/ic_star_black_18dp"
                 />
         </LinearLayout>

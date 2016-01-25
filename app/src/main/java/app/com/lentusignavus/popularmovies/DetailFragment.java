@@ -71,7 +71,8 @@ public class DetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Toast.makeText(getContext(), "Detail Fragment Called", Toast.LENGTH_SHORT).show();
+
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         // Inflate the layout for this fragment
         return rootView;
