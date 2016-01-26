@@ -28,8 +28,6 @@ public class MovieHelper extends SQLiteOpenHelper {
 
                 MovieContract.MovieEntry.COLUMN_TITLE + " TEXT, " +
 
-                MovieContract.MovieEntry.COLUMN_DESC + " TEXT, " +
-
                 MovieContract.MovieEntry.COLUMN_TRAIL + " TEXT, " +
 
                 MovieContract.MovieEntry.COLUMN_DESC + " TEXT, " +

@@ -1,18 +1,32 @@
 package app.com.lentusignavus.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 
+import java.util.List;
+
+import app.com.lentusignavus.popularmovies.database.MovieContract;
+import app.com.lentusignavus.popularmovies.database.MovieHelper;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 /**
@@ -23,7 +37,31 @@ import butterknife.Bind;
  * Use the {@link DetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements View.OnClickListener {
+
+
+    Bundle extras;
+    String movieTitle;
+    String movieImagePath;
+    String movieDescription;
+    Double voteAverage;
+    String releaseDate;
+    String movieId;
+    TrailerAdapter adapter;
+
+    TextView movieTitleView;
+    @Bind(R.id.movie_description)TextView movieDescriptionView;
+    @Bind(R.id.movie_vote_average) TextView voteAverageView;
+    @Bind(R.id.movie_release_date) TextView releaseDateView;
+    @Bind(R.id.big_image_poster) ImageView moviePosterView;
+    @Nullable @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
+    @Bind(R.id.trailer_list_view) ListView listView;
+    @Bind(R.id.save_movie_button) ImageButton saveMovieButton;
+    JSONArray youtubeVids;
+
+    SQLiteOpenHelper sql;
+    SQLiteDatabase db;
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -73,7 +111,12 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        ButterKnife.bind(this, rootView);
+
+        saveMovieButton.setOnClickListener(this);
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -94,6 +137,12 @@ public class DetailFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+
+
+        sql = new MovieHelper(context);
+
+       db = sql.getWritableDatabase();
     }
 
     @Override
@@ -116,4 +165,27 @@ public class DetailFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public void onClick(View v){
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, movieTitle);
+        cv.put(MovieContract.MovieEntry.COLUMN_DESC, movieDescription);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieId);
+        cv.put(MovieContract.MovieEntry.COLUMN_IMAGE_URI, movieImagePath);
+        cv.put(MovieContract.MovieEntry.COLUMN_RATING, voteAverage);
+        cv.put(MovieContract.MovieEntry.COLUMN_REAL_DATE, releaseDate);
+
+        long newRowId;
+         newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+
+
+        //List list = (List) FavoriteMovie.findAll(FavoriteMovie.class);
+        Toast.makeText(getContext(), "Successful save", Toast.LENGTH_SHORT).show();
+
+        return;
+
+    }
+
 }
