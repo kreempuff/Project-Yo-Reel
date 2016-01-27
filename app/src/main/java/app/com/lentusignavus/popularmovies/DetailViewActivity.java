@@ -1,6 +1,9 @@
 package app.com.lentusignavus.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +36,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import app.com.lentusignavus.popularmovies.database.MovieContract;
+import app.com.lentusignavus.popularmovies.database.MovieHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
@@ -194,7 +199,31 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction() {
+
+
+        SQLiteOpenHelper sqLiteOpenHelper = new MovieHelper(getApplicationContext());
+
+        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, movieTitle);
+        cv.put(MovieContract.MovieEntry.COLUMN_DESC, movieDescription);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieId);
+        cv.put(MovieContract.MovieEntry.COLUMN_IMAGE_URI, movieImagePath);
+        cv.put(MovieContract.MovieEntry.COLUMN_RATING, voteAverage);
+        cv.put(MovieContract.MovieEntry.COLUMN_REAL_DATE, releaseDate);
+
+        long newRowId;
+        newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+
+
+        //List list = (List) FavoriteMovie.findAll(FavoriteMovie.class);
+        Log.d(getClass().getSimpleName(), "Successful save " + cv);
+
         return;
+
     }
 }

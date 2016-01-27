@@ -122,9 +122,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction();
         }
     }
 
@@ -138,11 +138,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
                     + " must implement OnFragmentInteractionListener");
         }
 
-
-
-        sql = new MovieHelper(context);
-
-       db = sql.getWritableDatabase();
     }
 
     @Override
@@ -163,26 +158,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction();
     }
 
     public void onClick(View v){
 
-        ContentValues cv = new ContentValues();
-
-        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, movieTitle);
-        cv.put(MovieContract.MovieEntry.COLUMN_DESC, movieDescription);
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieId);
-        cv.put(MovieContract.MovieEntry.COLUMN_IMAGE_URI, movieImagePath);
-        cv.put(MovieContract.MovieEntry.COLUMN_RATING, voteAverage);
-        cv.put(MovieContract.MovieEntry.COLUMN_REAL_DATE, releaseDate);
-
-        long newRowId;
-         newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
-
-
-        //List list = (List) FavoriteMovie.findAll(FavoriteMovie.class);
-        Toast.makeText(getContext(), "Successful save", Toast.LENGTH_SHORT).show();
+        mListener.onFragmentInteraction();
 
         return;
 

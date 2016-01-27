@@ -2,7 +2,11 @@ package app.com.lentusignavus.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import app.com.lentusignavus.popularmovies.database.MovieContract;
+import app.com.lentusignavus.popularmovies.database.MovieHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -44,6 +50,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     Intent detailView;
     String sort;
     GetMovies getMovies;
+    SQLiteOpenHelper dbHelper;
+    SQLiteDatabase db;
 
 
     final String vote_sort = "vote_average.desc";
@@ -234,8 +242,84 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 startActivity(new Intent(getContext(), Settings.class));
                 break;
             case (R.id.favorite_movie_option):
+                AsyncTask<Void, Void, Boolean> favorMov = new getFavoriteMoviesTask();
+                favorMov.execute();
                 break;
         }
         return true;
     }
+
+
+
+    private class getFavoriteMoviesTask extends AsyncTask<Void, Void, Boolean>{
+
+
+        Boolean endEarly;
+        JSONArray movies = new JSONArray();
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+
+            JSONObject movie = new JSONObject();
+
+
+            dbHelper = new MovieHelper(getContext());
+
+            db = dbHelper.getReadableDatabase();
+
+
+            String[] columns = {
+                    MovieContract.MovieEntry.COLUMN_TITLE,
+                    MovieContract.MovieEntry.COLUMN_RATING,
+                    MovieContract.MovieEntry.COLUMN_REAL_DATE,
+                    MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+                    MovieContract.MovieEntry.COLUMN_DESC,
+                    MovieContract.MovieEntry.COLUMN_IMAGE_URI
+            };
+
+            Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columns, null, null, null, null, null);
+            Boolean results = cursor.moveToFirst();
+            if(!results) {
+                endEarly = true;
+                return endEarly;
+            } else {
+                while (results) {
+                    int  columnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URI);
+                    Log.d(getClass().getSimpleName(), Integer.toString(columnIndex));
+                    try {
+                        movie.put("imagePath", cursor.getString(columnIndex));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    movies.put(movie);
+                    movie.remove("imagePath");
+                    results = cursor.moveToNext();
+                }
+
+                endEarly = false;
+
+
+
+            }
+
+
+            return endEarly;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if (aBoolean){
+                Toast.makeText(getContext(), "No saved movies!", Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                Toast.makeText(getContext(), movies.toString(), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+    }
+
+
 }
