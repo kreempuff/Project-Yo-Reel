@@ -285,7 +285,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 return endEarly;
             } else {
                 while (results) {
-                    int  columnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URI);
+                    int columnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URI);
                     Log.d(getClass().getSimpleName(), Integer.toString(columnIndex));
                     try {
                         movie.put("imagePath", cursor.getString(columnIndex));
@@ -299,12 +299,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 }
 
                 endEarly = false;
-
-
-
             }
-
-
             return endEarly;
         }
 

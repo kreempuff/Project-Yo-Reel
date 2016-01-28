@@ -1,6 +1,7 @@
 package app.com.lentusignavus.popularmovies.database;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -18,6 +19,20 @@ public class MovieHelper extends SQLiteOpenHelper {
     public MovieHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
+
+
+
+    public void deleteAll(SQLiteDatabase db) throws SQLException{
+
+        String query = String.format("DELETE * FROM %s", MovieContract.MovieEntry.TABLE_NAME);
+        db.execSQL(query);
+
+        db.close();
+    }
+
+
+
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
