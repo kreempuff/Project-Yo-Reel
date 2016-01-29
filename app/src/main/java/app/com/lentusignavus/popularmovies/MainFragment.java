@@ -266,7 +266,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
         protected Boolean doInBackground(Void... params) throws SQLException {
 
 
-            JSONObject movie = new JSONObject();
+
 
 
             dbHelper = new MovieHelper(getContext());
@@ -290,22 +290,24 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 return endEarly;
             } else {
                 while (results) {
-                    int columnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URI);
+                    JSONObject movie = new JSONObject();
+                    int columnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE);
                     Log.d(getClass().getSimpleName(), Integer.toString(columnIndex));
                     try {
-                        movie.put("imagePath", cursor.getString(columnIndex));
+                        movie.put("title", cursor.getString(columnIndex));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
+                    //TODO figure out why moving the movie JSONObject declartion messes up query
                     movies.put(movie);
-                    //movie.remove("imagePath");
                     results = cursor.moveToNext();
                     Log.d(getClass().getSimpleName(), movies.toString());
                 }
 
                 endEarly = false;
             }
+
+            cursor.close();
             return endEarly;
         }
 
