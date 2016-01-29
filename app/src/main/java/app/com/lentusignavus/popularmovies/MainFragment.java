@@ -3,6 +3,7 @@ package app.com.lentusignavus.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -245,6 +246,10 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 AsyncTask<Void, Void, Boolean> favorMov = new getFavoriteMoviesTask();
                 favorMov.execute();
                 break;
+            case (R.id.delete_all_from_db):
+                AsyncTask<Void, Void, Void> delete = new deleteDB();
+                delete.execute();
+                break;
         }
         return true;
     }
@@ -258,7 +263,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
         JSONArray movies = new JSONArray();
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) throws SQLException {
 
 
             JSONObject movie = new JSONObject();
@@ -294,8 +299,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     }
 
                     movies.put(movie);
-                    movie.remove("imagePath");
+                    //movie.remove("imagePath");
                     results = cursor.moveToNext();
+                    Log.d(getClass().getSimpleName(), movies.toString());
                 }
 
                 endEarly = false;
@@ -316,5 +322,28 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
         }
     }
 
+
+    private class deleteDB extends AsyncTask<Void, Void, Void>{
+
+
+        @Override
+        protected Void doInBackground(Void... params) throws SQLException {
+            SQLiteOpenHelper sqLiteOpenHelper = new MovieHelper(getContext());
+
+            SQLiteDatabase db = sqLiteOpenHelper.getReadableDatabase();
+
+            db.execSQL(MovieHelper.deleteQuery);
+
+            db.close();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aBoolean) {
+            Toast.makeText(getContext(), "Click Fav Movies", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
 
 }

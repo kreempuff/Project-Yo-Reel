@@ -22,13 +22,7 @@ public class MovieHelper extends SQLiteOpenHelper {
 
 
 
-    public void deleteAll(SQLiteDatabase db) throws SQLException{
-
-        String query = String.format("DELETE * FROM %s", MovieContract.MovieEntry.TABLE_NAME);
-        db.execSQL(query);
-
-        db.close();
-    }
+    public static String deleteQuery = String.format("DELETE FROM %s", MovieContract.MovieEntry.TABLE_NAME);
 
 
 
