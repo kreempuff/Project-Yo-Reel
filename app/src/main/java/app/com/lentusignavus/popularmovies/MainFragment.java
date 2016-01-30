@@ -243,7 +243,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 startActivity(new Intent(getContext(), Settings.class));
                 break;
             case (R.id.favorite_movie_option):
-                AsyncTask<Void, Void, Boolean> favorMov = new getFavoriteMoviesTask();
+                sort = "favorites";
+                AsyncTask<Void, Void, JSONArray> favorMov = new getFavoriteMoviesTask();
                 favorMov.execute();
                 break;
             case (R.id.delete_all_from_db):
@@ -256,14 +257,14 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
 
 
-    private class getFavoriteMoviesTask extends AsyncTask<Void, Void, Boolean>{
+    private class getFavoriteMoviesTask extends AsyncTask<Void, Void, JSONArray>{
 
 
         Boolean endEarly;
         JSONArray movies = new JSONArray();
 
         @Override
-        protected Boolean doInBackground(Void... params) throws SQLException {
+        protected JSONArray doInBackground(Void... params) throws SQLException {
 
 
 
@@ -287,14 +288,23 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
             Boolean results = cursor.moveToFirst();
             if(!results) {
                 endEarly = true;
-                return endEarly;
+                return null;
             } else {
                 while (results) {
                     JSONObject movie = new JSONObject();
-                    int columnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE);
-                    Log.d(getClass().getSimpleName(), Integer.toString(columnIndex));
+                    int columnIndexTitle = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE);
+                    int columnIndexRelease = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_REAL_DATE);
+                    int columnIndexId = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
+                    int columnIndexVote = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RATING);
+                    int columnIndexImgPath = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URI);
+                    int columnIndexDesc = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_DESC);
                     try {
-                        movie.put("title", cursor.getString(columnIndex));
+                        movie.put("title", cursor.getString(columnIndexTitle));
+                        movie.put("poster_path", cursor.getString(columnIndexImgPath));
+                        movie.put("description", cursor.getString(columnIndexDesc));
+                        movie.put("vote_avg", cursor.getString(columnIndexVote));
+                        movie.put("movie_id", cursor.getString(columnIndexId));
+                        movie.put("release_date", cursor.getString(columnIndexRelease));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -308,17 +318,22 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
             }
 
             cursor.close();
-            return endEarly;
+            if(endEarly){
+                return null;
+            } else {
+                return movies;
+            }
+
         }
 
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            if (aBoolean){
+        protected void onPostExecute(JSONArray js) {
+            if (js == null){
                 Toast.makeText(getContext(), "No saved movies!", Toast.LENGTH_LONG).show();
                 return;
             } else {
-                Toast.makeText(getContext(), movies.toString(), Toast.LENGTH_LONG).show();
+                mgridView.setAdapter(new ImageAdapter(getContext(), js));
                 return;
             }
         }

@@ -51,7 +51,7 @@ public class ImageAdapter extends BaseAdapter {
             ImageView imageView;
 
             Uri imageUrl = Uri.parse(ApiInfo.getImageBaseUrl());
-            String finalImageUrl = null;
+            String finalImageUrl = "";
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
 
@@ -75,7 +75,7 @@ public class ImageAdapter extends BaseAdapter {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (!finalImageUrl.equals(null)) {
+            if (!finalImageUrl.equals("")) {
 
                 //A forward slash is replaced during uri building for some reason
                 //to the encoded value and the api doesn't accept encoded values
