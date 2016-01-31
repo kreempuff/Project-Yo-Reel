@@ -2,6 +2,7 @@ package app.com.lentusignavus.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -13,11 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import org.json.JSONArray;
 
@@ -56,7 +59,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     @Bind(R.id.big_image_poster) ImageView moviePosterView;
     @Nullable @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
     @Bind(R.id.trailer_list_view) ListView listView;
-    @Bind(R.id.save_movie_button) ImageButton saveMovieButton;
+    //@Bind(R.id.save_movie_button) ImageButton saveMovieButton;
+    @Bind(R.id.save_movie_button) ToggleButton saveMovieButton;
     JSONArray youtubeVids;
 
     SQLiteOpenHelper sql;
@@ -116,7 +120,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
         ButterKnife.bind(this, rootView);
 
-        saveMovieButton.setOnClickListener(this);
+        // saveMovieButton.setOnClickListener(this);
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -137,6 +141,42 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        SQLiteOpenHelper sqLiteOpenHelper = new MovieHelper(context);
+
+        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+
+        String[] columnsToReturn = {
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID
+        };
+
+        String[] selectionArgs = {
+                movieId
+        };
+
+        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?", selectionArgs, null, null, null);
+
+        if(cursor.moveToFirst()){
+            saveMovieButton.setChecked(true);
+            cursor.close();
+            return;
+        } else {
+            saveMovieButton.setChecked(false);
+        }
+
+        saveMovieButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    //deleteEntry();
+                    buttonView.setChecked(false);
+                } else {
+                    buttonView.setChecked(true);
+                }
+            }
+        });
+
+
 
     }
 

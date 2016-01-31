@@ -265,15 +265,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
         @Override
         protected JSONArray doInBackground(Void... params) throws SQLException {
-
-
-
-
-
             dbHelper = new MovieHelper(getContext());
 
             db = dbHelper.getReadableDatabase();
-
 
             String[] columns = {
                     MovieContract.MovieEntry.COLUMN_TITLE,
@@ -285,19 +279,21 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
             };
 
             Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columns, null, null, null, null, null);
-            Boolean results = cursor.moveToFirst();
-            if(!results) {
+
+            if(!cursor.moveToFirst()) {
                 endEarly = true;
                 return null;
             } else {
-                while (results) {
+                while (cursor.moveToNext()) {
                     JSONObject movie = new JSONObject();
+
                     int columnIndexTitle = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE);
                     int columnIndexRelease = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_REAL_DATE);
                     int columnIndexId = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
                     int columnIndexVote = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RATING);
                     int columnIndexImgPath = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URI);
                     int columnIndexDesc = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_DESC);
+
                     try {
                         movie.put("title", cursor.getString(columnIndexTitle));
                         movie.put("poster_path", cursor.getString(columnIndexImgPath));
@@ -310,7 +306,6 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     }
                     //TODO figure out why moving the movie JSONObject declartion messes up query
                     movies.put(movie);
-                    results = cursor.moveToNext();
                     Log.d(getClass().getSimpleName(), movies.toString());
                 }
 
@@ -328,13 +323,11 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
 
         @Override
-        protected void onPostExecute(JSONArray js) {
-            if (js == null){
+        protected void onPostExecute(JSONArray savedMovieJsonArray) {
+            if (savedMovieJsonArray == null){
                 Toast.makeText(getContext(), "No saved movies!", Toast.LENGTH_LONG).show();
-                return;
             } else {
-                mgridView.setAdapter(new ImageAdapter(getContext(), js));
-                return;
+                mgridView.setAdapter(new ImageAdapter(getContext(), savedMovieJsonArray));
             }
         }
     }

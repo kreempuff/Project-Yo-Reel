@@ -2,10 +2,12 @@ package app.com.lentusignavus.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -67,6 +69,10 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
+
+        Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.detail_fragment);
+
+
         ButterKnife.bind(this);
 
         //May be used in P2 to display title instead of toolbar
@@ -88,6 +94,8 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
             getMovieTrailers(movieId);
 
+            detailFragment.setArguments(extras);
+
 
             getSupportActionBar().setTitle(movieTitle);
 
@@ -95,8 +103,8 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
             Picasso.with(this).load(ApiInfo.getImageBaseUrl() + "w780" + movieImagePath).into(moviePosterView);
             //movieTitleView.setText(movieTitle);
             movieDescriptionView.setText(movieDescription);
-            voteAverageView.setText("Vote Average: " + voteAverage.toString());
-            releaseDateView.setText("Release Date: " + releaseDate);
+            voteAverageView.setText(String.format("Vote Average: %s", voteAverage.toString()));
+            releaseDateView.setText(String.format("Release Date: %s", releaseDate));
         }
 
     }
@@ -206,6 +214,22 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
         SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
 
+        String[] columnsToReturn = {
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID
+        };
+
+        String[] selectionArgs = {
+                movieId
+        };
+
+        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?", selectionArgs, null, null, null);
+
+        if(cursor.moveToFirst()){
+            Toast.makeText(getApplicationContext(), "Movie Saved Already", Toast.LENGTH_SHORT).show();
+            cursor.close();
+            return;
+        }
+
 
         ContentValues cv = new ContentValues();
 
@@ -222,8 +246,7 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
         //List list = (List) FavoriteMovie.findAll(FavoriteMovie.class);
         Log.d(getClass().getSimpleName(), "Successful save " + cv);
-
-        return;
-
+        cursor.close();
+        db.close();
     }
 }

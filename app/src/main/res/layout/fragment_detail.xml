@@ -59,12 +59,19 @@
                 android:text="Vote Average"
                 style="@style/TextAppearance.AppCompat.Headline"
                 />
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!---->
+                <!--android:src="@android:drawable/star_on"-->
+                <!--/>-->
+            <ToggleButton
                 android:id="@+id/save_movie_button"
-                android:src="@drawable/ic_star_black_18dp"
-                />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textOn="UnFavorite"
+                android:textOff="Favorite"
+                android:enabled="true" />
         </LinearLayout>
     </LinearLayout>
 
