@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -55,8 +56,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     SQLiteDatabase db;
 
 
-    final String vote_sort = "vote_average.desc";
-    final String pop_sort = "popularity.desc";
+    final String VOTE_SORT = "vote_average.desc";
+    final String POP_SORT = "popularity.desc";
+    final String FAVORITE_SORT = "favorites";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -106,9 +108,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(detailView);
         }
     }
 
@@ -116,18 +118,20 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-
-
-
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
 
 
-        sort = pop_sort;
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        sort = POP_SORT;
 
         getMovies = new GetMovies(this);
 
@@ -140,8 +144,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
         mListener = null;
     }
 
-        @Override
-        public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
+    @Override
+    public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
             final JSONArray jsonArrayOfMovies = jsonObject.getJSONArray("results");
 
             mgridView.setAdapter(new ImageAdapter(getContext(), jsonArrayOfMovies));
@@ -189,7 +193,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     detailView.putExtra("vote_avg", movieVoteAverage);
                     detailView.putExtra("release_date", movieReleaseDate);
                     detailView.putExtra("movie_id", movieID);
-                    startActivity(detailView);
+                    onButtonPressed();
+//                    startActivity(detailView);
                 }
             });
     }
@@ -206,7 +211,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Intent mIntent);
     }
 
 
@@ -222,19 +227,19 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case (R.id.popular_option_id):
-                if(sort.equals(pop_sort)) {
+                if(sort.equals(POP_SORT)) {
                     break;
                 } else {
-                    sort = pop_sort;
+                    sort = POP_SORT;
                     getMovies = new GetMovies(this);
                     getMovies.execute(sort);
                     break;
                 }
             case (R.id.vote_option_id):
-                if(sort.equals(vote_sort)) {
+                if(sort.equals(VOTE_SORT)) {
                     break;
                 } else {
-                    sort = vote_sort;
+                    sort = VOTE_SORT;
                     getMovies = new GetMovies(this);
                     getMovies.execute(sort);
                     break;
@@ -243,13 +248,12 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 startActivity(new Intent(getContext(), Settings.class));
                 break;
             case (R.id.favorite_movie_option):
-                sort = "favorites";
+                sort = FAVORITE_SORT;
                 AsyncTask<Void, Void, JSONArray> favorMov = new getFavoriteMoviesTask();
                 favorMov.execute();
                 break;
             case (R.id.delete_all_from_db):
-                AsyncTask<Void, Void, Void> delete = new deleteDB();
-                delete.execute();
+                new deleteDB().execute();
                 break;
         }
         return true;
@@ -284,7 +288,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                 endEarly = true;
                 return null;
             } else {
-                while (cursor.moveToNext()) {
+
+                do {
                     JSONObject movie = new JSONObject();
 
                     int columnIndexTitle = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE);
@@ -307,12 +312,13 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     //TODO figure out why moving the movie JSONObject declartion messes up query
                     movies.put(movie);
                     Log.d(getClass().getSimpleName(), movies.toString());
-                }
+                } while (cursor.moveToNext());
 
                 endEarly = false;
             }
 
             cursor.close();
+
             if(endEarly){
                 return null;
             } else {

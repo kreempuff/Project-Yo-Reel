@@ -16,11 +16,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -81,7 +83,7 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
         setSupportActionBar(detailToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         extras = getIntent().getExtras();
         if (extras != null) {
@@ -94,18 +96,20 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
             getMovieTrailers(movieId);
 
-            detailFragment.setArguments(extras);
-
 
             getSupportActionBar().setTitle(movieTitle);
-
-            //TODO make date format more user friendly
-            Picasso.with(this).load(ApiInfo.getImageBaseUrl() + "w780" + movieImagePath).into(moviePosterView);
-            //movieTitleView.setText(movieTitle);
-            movieDescriptionView.setText(movieDescription);
-            voteAverageView.setText(String.format("Vote Average: %s", voteAverage.toString()));
-            releaseDateView.setText(String.format("Release Date: %s", releaseDate));
         }
+
+//        saveMovie.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked){
+//                    Toast.makeText(getApplicationContext(), "Uncheck", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Check", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
     }
 
@@ -195,8 +199,6 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -205,48 +207,9 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
 
 
-
+    //saves movie to database
     @Override
     public void onFragmentInteraction() {
-
-
-        SQLiteOpenHelper sqLiteOpenHelper = new MovieHelper(getApplicationContext());
-
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
-
-        String[] columnsToReturn = {
-                MovieContract.MovieEntry.COLUMN_MOVIE_ID
-        };
-
-        String[] selectionArgs = {
-                movieId
-        };
-
-        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?", selectionArgs, null, null, null);
-
-        if(cursor.moveToFirst()){
-            Toast.makeText(getApplicationContext(), "Movie Saved Already", Toast.LENGTH_SHORT).show();
-            cursor.close();
-            return;
-        }
-
-
-        ContentValues cv = new ContentValues();
-
-        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, movieTitle);
-        cv.put(MovieContract.MovieEntry.COLUMN_DESC, movieDescription);
-        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieId);
-        cv.put(MovieContract.MovieEntry.COLUMN_IMAGE_URI, movieImagePath);
-        cv.put(MovieContract.MovieEntry.COLUMN_RATING, voteAverage);
-        cv.put(MovieContract.MovieEntry.COLUMN_REAL_DATE, releaseDate);
-
-        long newRowId;
-        newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
-
-
-        //List list = (List) FavoriteMovie.findAll(FavoriteMovie.class);
-        Log.d(getClass().getSimpleName(), "Successful save " + cv);
-        cursor.close();
-        db.close();
+        return;
     }
 }

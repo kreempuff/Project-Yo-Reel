@@ -3,6 +3,9 @@ package app.com.lentusignavus.popularmovies;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     @Bind(R.id.gridview) GridView mgridView;
     @Bind(R.id.toolbar) Toolbar toolbar;
     Intent detailView;
+    Boolean tabletMode;
     String sort;
     GetMovies getMovies;
     final String vote_sort = "vote_average.desc";
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
 
@@ -57,7 +62,17 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-        return;
+    public void onFragmentInteraction(Intent detailIntent) {
+
+        tabletMode = (findViewById(R.id.detail_container) != null);
+
+        if (tabletMode) {
+            FragmentTransaction frag = getSupportFragmentManager().beginTransaction();
+            Fragment detailFrag = DetailFragment.newInstance(detailIntent.getExtras());
+            frag.replace(R.id.detail_container, detailFrag);
+            frag.commit();
+        } else {
+            startActivity(detailIntent);
+        }
     }
 }

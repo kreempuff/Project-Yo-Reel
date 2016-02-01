@@ -3,13 +3,16 @@ package app.com.lentusignavus.popularmovies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import app.com.lentusignavus.popularmovies.database.MovieContract;
@@ -42,6 +48,8 @@ import butterknife.ButterKnife;
  */
 public class DetailFragment extends Fragment implements View.OnClickListener {
 
+    private final String LOG_TAG = "DetailFragment - TAG";
+
 
     Bundle extras;
     String movieTitle;
@@ -53,17 +61,17 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     TrailerAdapter adapter;
 
     TextView movieTitleView;
-    @Bind(R.id.movie_description)TextView movieDescriptionView;
+    @Bind(R.id.movie_description) TextView movieDescriptionView;
     @Bind(R.id.movie_vote_average) TextView voteAverageView;
     @Bind(R.id.movie_release_date) TextView releaseDateView;
     @Bind(R.id.big_image_poster) ImageView moviePosterView;
-    @Nullable @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
-    @Bind(R.id.trailer_list_view) ListView listView;
+    //@Nullable @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
+    //@Bind(R.id.trailer_list_view) ListView listView;
     //@Bind(R.id.save_movie_button) ImageButton saveMovieButton;
-    @Bind(R.id.save_movie_button) ToggleButton saveMovieButton;
+     @Bind(R.id.save_movie_button) ToggleButton saveMovieButton;
     JSONArray youtubeVids;
 
-    SQLiteOpenHelper sql;
+    SQLiteOpenHelper movieHelper;
     SQLiteDatabase db;
 
 
@@ -87,17 +95,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param mainActivityBundle Parameter 1.
      * @return A new instance of fragment DetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance(String param1, String param2) {
+    public static DetailFragment newInstance(Bundle mainActivityBundle) {
         DetailFragment fragment = new DetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        fragment.setArguments(mainActivityBundle);
         return fragment;
     }
 
@@ -114,15 +118,26 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
 
         ButterKnife.bind(this, rootView);
 
-        // saveMovieButton.setOnClickListener(this);
-        // Inflate the layout for this fragment
+
+        //TODO make date format more user friendly
+        Picasso.with(getContext()).load(ApiInfo.getImageBaseUrl() + "w780" + movieImagePath).into(moviePosterView);
+//        movieTitleView.setText(movieTitle);
+        movieDescriptionView.setText(movieDescription);
+        voteAverageView.setText(String.format("Vote Average: %s", voteAverage.toString()));
+        releaseDateView.setText(String.format("Release Date: %s", releaseDate));
+
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        checkIfMovieIsFavoriteAndSetUpFavoriteButton();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -134,6 +149,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onAttach(Context context) {
+
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -142,41 +158,31 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
                     + " must implement OnFragmentInteractionListener");
         }
 
-        SQLiteOpenHelper sqLiteOpenHelper = new MovieHelper(context);
+        extras = getActivity().getIntent().getExtras();
+        Bundle tabletExtras = getArguments();
 
-        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
+        if (extras != null) {
 
-        String[] columnsToReturn = {
-                MovieContract.MovieEntry.COLUMN_MOVIE_ID
-        };
+            movieTitle = extras.getString("title");
+            movieImagePath = extras.getString("imagePath");
+            movieDescription = extras.getString("description");
+            voteAverage = extras.getDouble("vote_avg");
+            releaseDate = extras.getString("release_date");
+            movieId = extras.getString("movie_id");
 
-        String[] selectionArgs = {
-                movieId
-        };
+            Log.d(LOG_TAG, extras.toString());
 
-        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?", selectionArgs, null, null, null);
+        } else if (tabletExtras != null){
 
-        if(cursor.moveToFirst()){
-            saveMovieButton.setChecked(true);
-            cursor.close();
-            return;
-        } else {
-            saveMovieButton.setChecked(false);
+            movieTitle = tabletExtras.getString("title");
+            movieImagePath = tabletExtras.getString("imagePath");
+            movieDescription = tabletExtras.getString("description");
+            voteAverage = tabletExtras.getDouble("vote_avg");
+            releaseDate = tabletExtras.getString("release_date");
+            movieId = tabletExtras.getString("movie_id");
+
+            Log.d("Table Extra", tabletExtras.toString());
         }
-
-        saveMovieButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    //deleteEntry();
-                    buttonView.setChecked(false);
-                } else {
-                    buttonView.setChecked(true);
-                }
-            }
-        });
-
-
 
     }
 
@@ -206,6 +212,133 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         mListener.onFragmentInteraction();
 
         return;
+
+    }
+
+
+    private ArrayList<View> getAllChildren(View v) {
+
+        if (!(v instanceof ViewGroup)) {
+            ArrayList<View> viewArrayList = new ArrayList<View>();
+            viewArrayList.add(v);
+            return viewArrayList;
+        }
+
+        ArrayList<View> result = new ArrayList<View>();
+
+        ViewGroup vg = (ViewGroup) v;
+        for (int i = 0; i < vg.getChildCount(); i++) {
+
+            View child = vg.getChildAt(i);
+
+            ArrayList<View> viewArrayList = new ArrayList<View>();
+            viewArrayList.add(v);
+            viewArrayList.addAll(getAllChildren(child));
+
+            result.addAll(viewArrayList);
+        }
+        return result;
+    }
+
+    private void checkIfMovieIsFavoriteAndSetUpFavoriteButton() {
+
+        movieHelper = new MovieHelper(getContext());
+
+        db = movieHelper.getWritableDatabase();
+
+        String[] columnsToReturn = {
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID
+        };
+
+        String[] selectionArgs = {
+                movieId
+        };
+
+        //TODO remove early stop here
+        if(movieId == null) return;
+
+        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+                columnsToReturn,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                selectionArgs, null, null, null);
+
+        if(cursor.moveToFirst()){
+            saveMovieButton.setChecked(true);
+            cursor.close();
+        } else {
+            saveMovieButton.setChecked(false);
+            cursor.close();
+        }
+
+        saveMovieButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                Log.d(LOG_TAG, "IS CHECKED:" + (String.valueOf(isChecked)));
+                if(isChecked) {
+                    favoriteMovie();
+                } else {
+                    unFavoriteMovie();
+                }
+            }
+        });
+
+    }
+
+    public boolean favoriteMovie() throws SQLException {
+        movieHelper = new MovieHelper(getContext());
+
+        db = movieHelper.getWritableDatabase();
+
+        String[] columnsToReturn = {
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID
+        };
+
+        String[] selectionArgs = {
+                movieId
+        };
+
+        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+                columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                selectionArgs, null, null, null);
+
+        if(cursor.moveToFirst()){
+            Toast.makeText(getContext(), "Movie Saved Already", Toast.LENGTH_SHORT).show();
+            cursor.close();
+            return false;
+        }
+
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, movieTitle);
+        cv.put(MovieContract.MovieEntry.COLUMN_DESC, movieDescription);
+        cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movieId);
+        cv.put(MovieContract.MovieEntry.COLUMN_IMAGE_URI, movieImagePath);
+        cv.put(MovieContract.MovieEntry.COLUMN_RATING, voteAverage);
+        cv.put(MovieContract.MovieEntry.COLUMN_REAL_DATE, releaseDate);
+
+        db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+        cursor.close();
+        db.close();
+
+        return true;
+    }
+
+    public void unFavoriteMovie() {
+        movieHelper = new MovieHelper(getContext());
+
+        db = movieHelper.getWritableDatabase();
+
+        String deleteQuery = String.format("DELETE FROM %s WHERE %s = %s",
+                MovieContract.MovieEntry.TABLE_NAME,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+                movieId);
+        Log.d(LOG_TAG, deleteQuery);
+        db.close();
+
+
 
     }
 
