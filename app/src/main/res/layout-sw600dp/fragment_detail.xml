@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -16,29 +15,17 @@
         android:orientation="vertical"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         tools:context=".DetailFragment">
-
-        <!--tools:context="app.com.lentusignavus.popularmovies.DetailViewActivity"-->
-
-        <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/some_placholder_text"-->
-        <!--style="@style/TextAppearance.AppCompat.Headline"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--android:id="@+id/movie_title"/>-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/detail_view_image_margin"
             android:orientation="horizontal">
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
                 android:layout_weight="1"
-
                 android:src="@mipmap/ic_launcher"
                 android:id="@+id/big_image_poster"
-
                 android:contentDescription="@string/movie_poster" />
             <!--TODO style the UI better-->
             <LinearLayout
@@ -63,12 +50,6 @@
                     android:text="Vote Average"
                     style="@style/TextAppearance.AppCompat.Headline"
                     />
-                <!--<ImageButton-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!---->
-                <!--android:src="@android:drawable/star_on"-->
-                <!--/>-->
                 <ToggleButton
                     android:id="@+id/save_movie_button"
                     android:layout_width="wrap_content"
@@ -82,7 +63,7 @@
         <ScrollView
             android:layout_width="match_parent"
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,10 +74,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color"
+            android:textColor="#f00"
             android:textSize="@dimen/text_size"
             android:text="Trailers"/>
-
 
         <ListView
             android:layout_width="match_parent"
@@ -106,5 +86,6 @@
 
     </LinearLayout>
 </ScrollView>
+
 
 

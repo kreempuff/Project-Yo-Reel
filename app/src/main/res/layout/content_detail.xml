@@ -71,7 +71,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/some_placholder_text"
+            android:text="@string/some_placeholder_text"
             android:id="@+id/movie_description"/>
     </ScrollView>
 

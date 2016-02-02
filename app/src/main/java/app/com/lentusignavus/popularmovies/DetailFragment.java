@@ -255,7 +255,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         };
 
         //TODO remove early stop here
-        if(movieId == null) return;
+        if(movieId == null) {
+            return;
+        }
 
         Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
                 columnsToReturn,
@@ -306,6 +308,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         if(cursor.moveToFirst()){
             Toast.makeText(getContext(), "Movie Saved Already", Toast.LENGTH_SHORT).show();
             cursor.close();
+            db.close();
             return false;
         }
 
