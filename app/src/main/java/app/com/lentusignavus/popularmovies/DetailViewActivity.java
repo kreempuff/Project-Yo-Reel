@@ -64,6 +64,7 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
     @Bind(R.id.big_image_poster) ImageView moviePosterView;
     @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
     @Bind(R.id.trailer_list_view) ListView listView;
+    @Bind(R.id.review_list_view) ListView reviewList;
     JSONArray youtubeVids;
 
 
@@ -146,7 +147,6 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
                 if(youtubeVids != null){
                     adapter = new TrailerAdapter(youtubeVids, getApplicationContext());
 
-                    //Toast.makeText(getApplicationContext(), youtubeVids.toString(), Toast.LENGTH_LONG).show();
 
                     listView.setAdapter(adapter);
 
@@ -165,8 +165,6 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
                     });
 
                 }
-
-                Log.d(getLocalClassName(), response.toString());
                 super.onSuccess(statusCode, headers, response);
             }
 
@@ -181,14 +179,24 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
         client.get(reviewUrl.toString(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONArray reviews = new JSONArray();
+                try {
+                    reviews = response.getJSONArray("results");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
+                reviewList.setAdapter(new ReviewAdapter(reviews, getApplicationContext()));
+                Log.d(getLocalClassName(), response.toString());
                 super.onSuccess(statusCode, headers, response);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response ) {
+
+                Log.d(getLocalClassName(), response.toString());
+
             }
         });
 

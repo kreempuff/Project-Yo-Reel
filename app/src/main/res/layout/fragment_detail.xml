@@ -32,10 +32,10 @@
             android:layout_marginTop="@dimen/detail_view_image_margin"
             android:orientation="horizontal">
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="400dp"
+                android:padding="0dp"
+                android:layout_height="250dp"
                 android:layout_weight="1"
-
                 android:src="@mipmap/ic_launcher"
                 android:id="@+id/big_image_poster"
 
@@ -61,7 +61,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/movie_vote_average"
                     android:text="Vote Average"
-                    style="@style/TextAppearance.AppCompat.Headline"
                     />
                 <!--<ImageButton-->
                 <!--android:layout_width="wrap_content"-->
@@ -73,22 +72,18 @@
                     android:id="@+id/save_movie_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textOn="UnFavorite"
                     android:textOff="Favorite"
                     android:enabled="true" />
             </LinearLayout>
         </LinearLayout>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_height="match_parent">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/some_placeholder_text"
                 android:id="@+id/movie_description"/>
-        </ScrollView>
 
         <TextView
             android:layout_width="wrap_content"
@@ -96,13 +91,22 @@
             android:textColor="@color/text_color"
             android:textSize="@dimen/text_size"
             android:text="Trailers"/>
-
-
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/trailer_list_view"
             android:divider="@color/text_color"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/text_size"
+            android:text="Reviews"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:id="@+id/review_list_view"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 </ScrollView>
