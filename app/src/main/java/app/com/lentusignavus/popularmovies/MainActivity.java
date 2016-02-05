@@ -33,14 +33,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener, DetailFragment.OnFragmentInteractionListener {
 
-    @Bind(R.id.gridview) GridView mgridView;
     @Bind(R.id.toolbar) Toolbar toolbar;
-    Intent detailView;
     Boolean tabletMode;
-    String sort;
-    GetMovies getMovies;
-    final String vote_sort = "vote_average.desc";
-    final String pop_sort = "popularity.desc";
 
 
 

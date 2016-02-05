@@ -55,17 +55,7 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
     Double voteAverage;
     String releaseDate;
     String movieId;
-    TrailerAdapter adapter;
-
-    TextView movieTitleView;
-    @Bind(R.id.movie_description)TextView movieDescriptionView;
-    @Bind(R.id.movie_vote_average) TextView voteAverageView;
-    @Bind(R.id.movie_release_date) TextView releaseDateView;
-    @Bind(R.id.big_image_poster) ImageView moviePosterView;
     @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
-    @Bind(R.id.trailer_list_view) ListView listView;
-    @Bind(R.id.review_list_view) ListView reviewList;
-    JSONArray youtubeVids;
 
 
     @Override
@@ -73,19 +63,11 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_view);
 
-        Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.detail_fragment);
-
-
         ButterKnife.bind(this);
-
-        //May be used in P2 to display title instead of toolbar
-        //movieTitleView = (TextView) findViewById(R.id.movie_title);
 
 
         setSupportActionBar(detailToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         extras = getIntent().getExtras();
         if (extras != null) {
             movieTitle = extras.getString("title");
@@ -95,114 +77,10 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
             releaseDate = extras.getString("release_date");
             movieId = extras.getString("movie_id");
 
-            getMovieTrailers(movieId);
-
-
-            getSupportActionBar().setTitle(movieTitle);
         }
-
-//        saveMovie.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked){
-//                    Toast.makeText(getApplicationContext(), "Uncheck", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Check", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
     }
 
-    private void getMovieTrailers(final String movieId) {
-        Uri trailerUrl = Uri.parse(ApiInfo.getApiBaseUrl())
-                .buildUpon()
-                .appendPath("movie")
-                .appendPath(movieId)
-                .appendPath("videos")
-                .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
-                .build();
 
-        Uri reviewUrl = Uri.parse(ApiInfo.getApiBaseUrl())
-                .buildUpon()
-                .appendPath("movie")
-                .appendPath(movieId)
-                .appendPath("reviews")
-                .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
-                .build();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.get(trailerUrl.toString(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-
-                try {
-                    youtubeVids = response.getJSONArray("results");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                if(youtubeVids != null){
-                    adapter = new TrailerAdapter(youtubeVids, getApplicationContext());
-
-
-                    listView.setAdapter(adapter);
-
-
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            Uri youtube = Uri.parse("http://www.youtube.com/")
-                                    .buildUpon()
-                                    .appendPath("watch")
-                                    .appendQueryParameter("v", ((TextView) view.findViewById(R.id.trailer_list_text_view)).getText().toString())
-                                    .build();
-                            startActivity(new Intent(Intent.ACTION_VIEW, youtube));
-                        }
-                    });
-
-                }
-                super.onSuccess(statusCode, headers, response);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-                Toast.makeText(getApplicationContext(), responseString, Toast.LENGTH_SHORT).show();
-                super.onFailure(statusCode, headers, responseString, throwable);
-            }
-        });
-
-        client.get(reviewUrl.toString(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray reviews = new JSONArray();
-                try {
-                    reviews = response.getJSONArray("results");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-                reviewList.setAdapter(new ReviewAdapter(reviews, getApplicationContext()));
-                Log.d(getLocalClassName(), response.toString());
-                super.onSuccess(statusCode, headers, response);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response ) {
-
-                Log.d(getLocalClassName(), response.toString());
-
-            }
-        });
-
-
-
-    }
 
 
     @Override
@@ -211,11 +89,6 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
     }
 
 
-
-
-
-
-    //saves movie to database
     @Override
     public void onFragmentInteraction() {
         return;

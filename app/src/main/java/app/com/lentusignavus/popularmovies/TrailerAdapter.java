@@ -1,6 +1,7 @@
 package app.com.lentusignavus.popularmovies;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,18 +55,14 @@ public class TrailerAdapter extends BaseAdapter {
         TextView textView;
 
         if (convertView == null){
-//
 
             v = LayoutInflater.from(mContext).inflate(R.layout.trailer_list_item, null);
             textView = (TextView) v.findViewById(R.id.trailer_list_text_view);
 
-            Toast.makeText(mContext, "Trailer Adapter", Toast.LENGTH_SHORT).show();
+            String text = String.format(mContext.getResources().getString(R.string.trailer_text), (position + 1));
 
-            try {
-                textView.setText(trailerArray.getJSONObject(position).getString("key"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            textView.setText(text);
+
         } else {
             v = convertView;
         }

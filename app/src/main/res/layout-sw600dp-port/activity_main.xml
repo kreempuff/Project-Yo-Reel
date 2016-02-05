@@ -27,6 +27,7 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         tools:context="app.com.lentusignavus.popularmovies.MainFragment"
         android:name="app.com.lentusignavus.popularmovies.MainFragment"
         android:id="@+id/main_fragment"

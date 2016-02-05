@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_play_circle_filled_black_36dp"
+        android:src="@drawable/ic_play_arrow_white_48dp"
         android:layout_weight="1"/>
     <TextView
         android:id="@+id/trailer_list_text_view"

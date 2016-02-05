@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="main_view_padding">10dp</dimen>
+    <dimen name="detail_view_padding">20dp</dimen>
     <dimen name="detail_view_image_margin">30dp</dimen>
-    <dimen name="text_size">20sp</dimen>
+    <dimen name="text_size">24sp</dimen>
+    <dimen name="movie_detail_title_size">40sp</dimen>
 </resources>

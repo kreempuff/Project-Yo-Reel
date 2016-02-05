@@ -1,6 +1,10 @@
 package app.com.lentusignavus.popularmovies;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +56,9 @@ public class ReviewAdapter extends BaseAdapter {
 //
             textView = new TextView(mContext);
             textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setTextColor(R.color.text_color);
+            textView.setTextColor(ContextCompat.getColor(mContext, R.color.text_color));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+
 
             Toast.makeText(mContext, "Trailer Adapter", Toast.LENGTH_SHORT).show();
 

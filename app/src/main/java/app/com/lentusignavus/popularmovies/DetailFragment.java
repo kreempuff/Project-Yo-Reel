@@ -2,6 +2,7 @@ package app.com.lentusignavus.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -25,9 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,7 @@ import app.com.lentusignavus.popularmovies.database.MovieContract;
 import app.com.lentusignavus.popularmovies.database.MovieHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 
 /**
@@ -60,15 +67,14 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     String movieId;
     TrailerAdapter adapter;
 
-    TextView movieTitleView;
+    @Bind(R.id.movie_title) TextView movieTitleView;
     @Bind(R.id.movie_description) TextView movieDescriptionView;
     @Bind(R.id.movie_vote_average) TextView voteAverageView;
     @Bind(R.id.movie_release_date) TextView releaseDateView;
     @Bind(R.id.big_image_poster) ImageView moviePosterView;
-    //@Nullable @Bind(R.id.detail_view_toolbar) Toolbar detailToolbar;
-    //@Bind(R.id.trailer_list_view) ListView listView;
-    //@Bind(R.id.save_movie_button) ImageButton saveMovieButton;
-     @Bind(R.id.save_movie_button) ToggleButton saveMovieButton;
+    @Bind(R.id.save_movie_button) ToggleButton saveMovieButton;
+    @Bind(R.id.trailer_list_view) ListView trailerListView;
+    @Bind(R.id.review_list_view) ListView reviewList;
     JSONArray youtubeVids;
 
     SQLiteOpenHelper movieHelper;
@@ -91,14 +97,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param mainActivityBundle Parameter 1.
-     * @return A new instance of fragment DetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static DetailFragment newInstance(Bundle mainActivityBundle) {
         DetailFragment fragment = new DetailFragment();
         fragment.setArguments(mainActivityBundle);
@@ -123,13 +121,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
         ButterKnife.bind(this, rootView);
 
-
-        //TODO make date format more user friendly
         Picasso.with(getContext()).load(ApiInfo.getImageBaseUrl() + "w780" + movieImagePath).into(moviePosterView);
-//        movieTitleView.setText(movieTitle);
         movieDescriptionView.setText(movieDescription);
-        voteAverageView.setText(String.format("Vote Average: %s", voteAverage.toString()));
+        voteAverageView.setText(String.format("Vote Average: %s/10", voteAverage.toString()));
         releaseDateView.setText(String.format("Release Date: %s", releaseDate));
+        movieTitleView.setText(movieTitle);
 
         return rootView;
     }
@@ -137,6 +133,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getMovieTrailers(movieId);
         checkIfMovieIsFavoriteAndSetUpFavoriteButton();
     }
 
@@ -242,6 +239,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
 
     private void checkIfMovieIsFavoriteAndSetUpFavoriteButton() {
 
+        if(movieId == null) {
+            return;
+        }
+
         movieHelper = new MovieHelper(getContext());
 
         db = movieHelper.getWritableDatabase();
@@ -254,10 +255,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
                 movieId
         };
 
-        //TODO remove early stop here
-        if(movieId == null) {
-            return;
-        }
+
 
         Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
                 columnsToReturn,
@@ -271,6 +269,8 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
             saveMovieButton.setChecked(false);
             cursor.close();
         }
+
+        db.close();
 
         saveMovieButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -340,6 +340,105 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
                 movieId);
         Log.d(LOG_TAG, deleteQuery);
         db.close();
+
+
+
+    }
+
+
+    private void getMovieTrailers(final String movieId) {
+        Uri trailerUrl = Uri.parse(ApiInfo.getApiBaseUrl())
+                .buildUpon()
+                .appendPath("movie")
+                .appendPath(movieId)
+                .appendPath("videos")
+                .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
+                .build();
+
+        Uri reviewUrl = Uri.parse(ApiInfo.getApiBaseUrl())
+                .buildUpon()
+                .appendPath("movie")
+                .appendPath(movieId)
+                .appendPath("reviews")
+                .appendQueryParameter("api_key", ApiInfo.getMoviedbKey())
+                .build();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(trailerUrl.toString(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+                    youtubeVids = response.getJSONArray("results");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if(youtubeVids != null){
+                    adapter = new TrailerAdapter(youtubeVids, getContext());
+
+
+                    trailerListView.setAdapter(adapter);
+
+
+                    trailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            String key;
+                            try {
+                                key = youtubeVids.getJSONObject(position).getString("key");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+
+                            Uri youtube = Uri.parse("http://www.youtube.com/")
+                                    .buildUpon()
+                                    .appendPath("watch")
+                                    .appendQueryParameter("v", key)
+                                    .build();
+                            startActivity(new Intent(Intent.ACTION_VIEW, youtube));
+                        }
+                    });
+
+                }
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+
+                Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                super.onFailure(statusCode, headers, throwable, response);
+            }
+        });
+
+        client.get(reviewUrl.toString(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                JSONArray reviews = new JSONArray();
+                try {
+                    reviews = response.getJSONArray("results");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                reviewList.setAdapter(new ReviewAdapter(reviews, getContext()));
+                Log.d(getClass().getSimpleName(), response.toString());
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response ) {
+
+                Log.d(getClass().getSimpleName(), response.toString());
+
+            }
+        });
 
 
 

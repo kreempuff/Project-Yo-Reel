@@ -1,15 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="app.com.lentusignavus.popularmovies.MainActivity"
-    tools:showIn="@layout/activity_main"
-    android:paddingTop="@dimen/main_view_padding"
-    android:paddingBottom="@dimen/main_view_padding"
-
+    tools:context=".MainFragment"
+    android:layout_marginTop="?attr/actionBarSize"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,8 +12,8 @@
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
+        android:numColumns="3"
+        android:verticalSpacing="0dp"
         android:stretchMode="columnWidth"
         android:gravity="center_horizontal">
 

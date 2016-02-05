@@ -42,13 +42,10 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class MainFragment extends Fragment implements OnTaskCompleted {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     @Bind(R.id.gridview) GridView mgridView;
-    //@Bind(R.id.toolbar) Toolbar toolbar;
     Intent detailView;
     String sort;
     GetMovies getMovies;
@@ -60,7 +57,6 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     final String POP_SORT = "popularity.desc";
     final String FAVORITE_SORT = "favorites";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -357,8 +353,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
         @Override
         protected void onPostExecute(Void aBoolean) {
-            Toast.makeText(getContext(), "Click Fav Movies", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(getContext(), " All Movies Deleted!", Toast.LENGTH_SHORT).show();
         }
     }
 
