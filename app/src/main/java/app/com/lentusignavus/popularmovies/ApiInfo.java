@@ -5,7 +5,7 @@ package app.com.lentusignavus.popularmovies;
  */
 public class ApiInfo {
     public static String getMoviedbKey() {
-        return "9b31ca59faf0cb8d78ed555d83f56b82";
+        return "<insert API key here>";
     }
     public static String getImageBaseUrl(){
         return "http://image.tmdb.org/t/p/";
