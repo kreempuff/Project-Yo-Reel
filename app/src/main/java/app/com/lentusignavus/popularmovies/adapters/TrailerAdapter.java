@@ -1,4 +1,4 @@
-package app.com.lentusignavus.popularmovies;
+package app.com.lentusignavus.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import app.com.lentusignavus.popularmovies.R;
 import butterknife.Bind;
 
 /**

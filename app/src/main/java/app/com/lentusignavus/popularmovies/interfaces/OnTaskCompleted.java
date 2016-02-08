@@ -1,4 +1,4 @@
-package app.com.lentusignavus.popularmovies;
+package app.com.lentusignavus.popularmovies.interfaces;
 
 import org.json.JSONException;
 import org.json.JSONObject;

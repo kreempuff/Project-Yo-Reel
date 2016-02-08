@@ -1,4 +1,4 @@
-package app.com.lentusignavus.popularmovies;
+package app.com.lentusignavus.popularmovies.fragments;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,19 +8,15 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,8 +32,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import app.com.lentusignavus.popularmovies.ApiInfo;
+import app.com.lentusignavus.popularmovies.R;
+import app.com.lentusignavus.popularmovies.adapters.ReviewAdapter;
+import app.com.lentusignavus.popularmovies.adapters.TrailerAdapter;
 import app.com.lentusignavus.popularmovies.database.MovieContract;
 import app.com.lentusignavus.popularmovies.database.MovieHelper;
 import butterknife.Bind;

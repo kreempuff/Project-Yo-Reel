@@ -1,4 +1,4 @@
-package app.com.lentusignavus.popularmovies;
+package app.com.lentusignavus.popularmovies.adapters;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import app.com.lentusignavus.popularmovies.R;
 
 import static app.com.lentusignavus.popularmovies.R.color.text_color;
 

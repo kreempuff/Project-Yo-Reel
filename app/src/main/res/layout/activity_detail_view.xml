@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="app.com.lentusignavus.popularmovies.DetailViewActivity">
+    tools:context=".activity.DetailViewActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:name="app.com.lentusignavus.popularmovies.DetailFragment"
+        android:name="app.com.lentusignavus.popularmovies.fragments.DetailFragment"
         android:id="@+id/detail_fragment"
         tools:layout="@layout/fragment_detail">
 

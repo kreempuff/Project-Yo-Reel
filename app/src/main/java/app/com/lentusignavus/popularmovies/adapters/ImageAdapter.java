@@ -1,4 +1,4 @@
-package app.com.lentusignavus.popularmovies;
+package app.com.lentusignavus.popularmovies.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import app.com.lentusignavus.popularmovies.ApiInfo;
 
 
 public class ImageAdapter extends BaseAdapter {

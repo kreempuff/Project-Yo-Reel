@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/main_container"
-    tools:context="app.com.lentusignavus.popularmovies.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -28,8 +28,8 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="app.com.lentusignavus.popularmovies.MainFragment"
-        android:name="app.com.lentusignavus.popularmovies.MainFragment"
+        tools:context=".fragments.MainFragment"
+        android:name="app.com.lentusignavus.popularmovies.fragments.MainFragment"
         android:id="@+id/main_fragment"
         android:layout_marginTop="?attr/actionBarSize"
         tools:layout="@layout/fragment_main">

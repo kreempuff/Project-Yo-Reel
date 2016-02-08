@@ -5,7 +5,7 @@
     android:layout_marginTop="?actionBarSize"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    tools:context=".DetailFragment">
+    tools:context=".fragments.DetailFragment">
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:id="@+id/detail_fragment_container"
             android:orientation="vertical">
 
-            <!--tools:context="app.com.lentusignavus.popularmovies.DetailViewActivity"-->
+            <!--tools:context="app.com.lentusignavus.popularmovies.activity.DetailViewActivity"-->
 
 
             <LinearLayout

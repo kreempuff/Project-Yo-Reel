@@ -21,10 +21,7 @@ public class MovieHelper extends SQLiteOpenHelper {
     }
 
 
-
-    public static String deleteQuery = String.format("DELETE FROM %s", MovieContract.MovieEntry.TABLE_NAME);
-
-
+    public final String deleteQuery = String.format("DELETE FROM %s", MovieContract.MovieEntry.TABLE_NAME);
 
 
 
@@ -58,8 +55,16 @@ public class MovieHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-
         db.execSQL("DROP TABLE IF EXISTS " + MovieContract.MovieEntry.TABLE_NAME);
         onCreate(db);
+    }
+
+
+
+
+    public void clearDataBase() throws SQLException {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(deleteQuery);
+        db.close();
     }
 }

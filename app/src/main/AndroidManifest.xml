@@ -17,27 +17,27 @@
         <!--<meta-data android:name="QUERY_LOG" android:value="true" />-->
         <!--<meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="app.com.lentusignavus.popularmovies" />-->
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailViewActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".activity.DetailViewActivity"
+            android:parentActivityName=".activity.MainActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
         <activity android:name=".Settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
 
         </activity>
 

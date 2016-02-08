@@ -1,4 +1,4 @@
-package app.com.lentusignavus.popularmovies;
+package app.com.lentusignavus.popularmovies.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

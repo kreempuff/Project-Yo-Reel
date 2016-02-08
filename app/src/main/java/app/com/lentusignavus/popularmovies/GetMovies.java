@@ -4,8 +4,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.loopj.android.http.AsyncHttpClient;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import app.com.lentusignavus.popularmovies.Utils.JSONHandler;
+import app.com.lentusignavus.popularmovies.interfaces.OnTaskCompleted;
 
 /**
  * Created by kare2436 on 12/31/15.
