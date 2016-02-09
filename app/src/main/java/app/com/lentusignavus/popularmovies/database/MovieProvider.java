@@ -2,22 +2,76 @@ package app.com.lentusignavus.popularmovies.database;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-/**
- * Created by kare2436 on 1/23/16.
- */
+
 public class MovieProvider extends ContentProvider {
+
+    private static final UriMatcher uriMatcher = buildUriMatcher();
+
+    private MovieHelper movieHelper;
+
+    private static final int ONE_MOVIE = 100;
+
+    private static final int ALL_MOVIES = 200;
+
+
+
+    private static UriMatcher buildUriMatcher() {
+
+        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+        final String authority = MovieContract.CONTENT_AUTHORITY;
+
+        matcher.addURI(authority, MovieContract.PATH_MOVIES+"/#", 1);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES, 2);
+
+        return matcher;
+    }
+
     @Override
     public boolean onCreate() {
-        return false;
+        movieHelper = new MovieHelper(getContext());
+
+        return true;
     }
 
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Cursor cursor;
+        switch (uriMatcher.match(uri)){
+            case ONE_MOVIE:
+                cursor = movieHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selection == null ? null : selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case ALL_MOVIES:
+                cursor = movieHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selection == null? null : selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            default:
+                throw new UnsupportedOperationException("Uri not supported: " + uri);
+        };
+
+
+
+
         return null;
     }
 

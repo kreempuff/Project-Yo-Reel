@@ -344,14 +344,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
         @Override
         protected Void doInBackground(Void... params) throws SQLException {
-            SQLiteOpenHelper sqLiteOpenHelper = new MovieHelper(getContext());
+            SQLiteOpenHelper movieHelper = new MovieHelper(getContext());
 
-            SQLiteDatabase db = sqLiteOpenHelper.getReadableDatabase();
-
-            db.execSQL(MovieHelper.deleteQuery);
-
-            db.close();
-
+            //TODO add delete from content provider
             return null;
         }
 
