@@ -1,5 +1,6 @@
 package app.com.lentusignavus.popularmovies.database;
 
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -40,6 +41,10 @@ public class MovieContract {
         public static final String COLUMN_DESC = "description";
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
+
+        public static Uri buildMovieUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
 
 
 

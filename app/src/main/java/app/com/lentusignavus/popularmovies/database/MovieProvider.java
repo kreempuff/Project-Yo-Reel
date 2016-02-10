@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
@@ -14,9 +15,9 @@ public class MovieProvider extends ContentProvider {
 
     private MovieHelper movieHelper;
 
-    private static final int ONE_MOVIE = 100;
+    private static final int ONE_MOVIE = 1;
 
-    private static final int ALL_MOVIES = 200;
+    private static final int ALL_MOVIES = 2;
 
 
 
@@ -25,8 +26,8 @@ public class MovieProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, MovieContract.PATH_MOVIES+"/#", 1);
-        matcher.addURI(authority, MovieContract.PATH_MOVIES, 2);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES + "/#", ONE_MOVIE);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES, ALL_MOVIES);
 
         return matcher;
     }
@@ -70,9 +71,7 @@ public class MovieProvider extends ContentProvider {
         };
 
 
-
-
-        return null;
+        return cursor;
     }
 
     @Nullable
@@ -84,11 +83,31 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        final SQLiteDatabase db = movieHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+        Uri returnUri = null;
+        switch (uriMatcher.match(uri)){
+            case ONE_MOVIE:
+                long ID = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+                if (ID > 0) {
+                    returnUri = MovieContract.MovieEntry.buildMovieUri(ID);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+
+                break;
+        }
+
+
+        return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+
+
+
+
         return 0;
     }
 
