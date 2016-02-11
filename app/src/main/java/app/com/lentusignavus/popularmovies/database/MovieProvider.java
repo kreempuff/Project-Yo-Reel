@@ -1,6 +1,7 @@
 package app.com.lentusignavus.popularmovies.database;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ public class MovieProvider extends ContentProvider {
     private static final int ONE_MOVIE = 1;
 
     private static final int ALL_MOVIES = 2;
+
 
 
 
@@ -104,11 +106,28 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-
-
-
-
-        return 0;
+        final SQLiteDatabase db = movieHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+        int rowsDeleted;
+        switch (match) {
+            case ONE_MOVIE:
+                rowsDeleted = db.delete(
+                        MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case ALL_MOVIES:
+                rowsDeleted = db.delete(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = '" + ContentUris.parseId(uri) + "'",
+                        selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        // Because a null deletes all rows
+        if (selection == null || rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override
