@@ -1,7 +1,9 @@
 package app.com.lentusignavus.popularmovies.fragments;
 
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -45,7 +47,7 @@ import butterknife.ButterKnife;
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment implements OnTaskCompleted {
+public class MainFragment extends Fragment implements OnTaskCompleted, LoaderManager.LoaderCallbacks {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -197,6 +199,21 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 //                    startActivity(detailView);
                 }
             });
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
     }
 
     /**
