@@ -364,6 +364,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
             SQLiteOpenHelper movieHelper = new MovieHelper(getContext());
 
             //TODO add delete from content provider
+            getContentResolver();
             return null;
         }
 
