@@ -170,8 +170,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
             releaseDate = extras.getString("release_date");
             movieId = extras.getString("movie_id");
 
-            Log.d(LOG_TAG, extras.toString());
-
         } else if (tabletExtras != null){
 
             movieTitle = tabletExtras.getString("title");
@@ -184,12 +182,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
             Log.d("Table Extra", tabletExtras.toString());
         }
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -312,9 +304,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
     }
 
     public boolean favoriteMovie() throws SQLException {
-        movieHelper = new MovieHelper(getContext());
-
-        db = movieHelper.getWritableDatabase();
 
         String[] columnsToReturn = {
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID
@@ -324,14 +313,20 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
                 movieId
         };
 
-        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
-                columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
-                selectionArgs, null, null, null);
+//        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+//                columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+//                selectionArgs, null, null, null);
+
+        Cursor cursor = getContext()
+                .getContentResolver()
+                .query(MovieContract.MovieEntry.CONTENT_URI,
+                        columnsToReturn,
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                        selectionArgs,
+                        null);
 
         if(cursor.moveToFirst()){
             Toast.makeText(getContext(), "Movie Saved Already", Toast.LENGTH_SHORT).show();
-            cursor.close();
-            db.close();
             return false;
         }
 
@@ -345,29 +340,18 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
         cv.put(MovieContract.MovieEntry.COLUMN_RATING, voteAverage);
         cv.put(MovieContract.MovieEntry.COLUMN_REAL_DATE, releaseDate);
 
-        db.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+        getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
         cursor.close();
-        db.close();
 
         return true;
     }
 
     public void unFavoriteMovie() {
-//        movieHelper = new MovieHelper(getContext());
-//
-//        db = movieHelper.getWritableDatabase();
 
-        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+        int rows = getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + movieId, null);
 
-        String deleteQuery = String.format("DELETE FROM %s WHERE %s = %s",
-                MovieContract.MovieEntry.TABLE_NAME,
-                MovieContract.MovieEntry.COLUMN_MOVIE_ID,
-                movieId);
-        Log.d(LOG_TAG, deleteQuery);
-        db.close();
-
-
+        Log.d(getClass().getSimpleName(), String.format("Rows deleted: %s", rows));
 
     }
 

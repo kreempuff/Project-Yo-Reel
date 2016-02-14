@@ -75,7 +75,6 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         final SQLiteDatabase db = movieHelper.getWritableDatabase();
-        final int match = uriMatcher.match(uri);
         Uri returnUri = null;
         switch (uriMatcher.match(uri)){
             case ONE_MOVIE:
@@ -89,7 +88,7 @@ public class MovieProvider extends ContentProvider {
                 break;
         }
 
-
+        db.close();
         return returnUri;
     }
 
@@ -113,6 +112,7 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         // Because a null deletes all rows
+        db.close();
         if (selection == null || rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }

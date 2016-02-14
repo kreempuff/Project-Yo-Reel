@@ -104,16 +104,78 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (savedInstanceState != null){
+            Log.d(getClass().getSimpleName(), savedInstanceState.toString());
+        }
+
+        if (savedInstanceState != null && savedInstanceState.get("sort") != null){
+        Log.d(getClass().getSimpleName(), "Inside Save coditional");
+            sort = savedInstanceState.getString("sort");
+            switch (sort){
+                case FAVORITE_SORT:
+                    new getFavoriteMoviesTask().execute();
+                    break;
+                default:
+                    getMovies = new GetMovies2(this, getContext());
+
+                    getMovies.getMovies(sort);
+                    break;
+            }
+        } else {
+        Log.d(getClass().getSimpleName(), "Inside else coditional");
+
         sort = POP_SORT;
 
         getMovies = new GetMovies2(this, getContext());
 
         getMovies.getMovies(sort);
+
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putString("sort", sort);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+
+        if (savedInstanceState != null && savedInstanceState.getString("sort") != null){
+            Log.d(getClass().getSimpleName(), "Inside Save coditional");
+            sort = savedInstanceState.getString("sort");
+            switch (sort){
+                case FAVORITE_SORT:
+                    new getFavoriteMoviesTask().execute();
+                    break;
+                default:
+                    getMovies = new GetMovies2(this, getContext());
+
+                    getMovies.getMovies(sort);
+                    break;
+            }
+        } else {
+            Log.d(getClass().getSimpleName(), "Inside else coditional");
+
+            sort = POP_SORT;
+
+            getMovies = new GetMovies2(this, getContext());
+
+            getMovies.getMovies(sort);
+
+        }
+
+        super.onViewStateRestored(savedInstanceState);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(getClass().getSimpleName(), "Detached");
         mListener = null;
     }
 
@@ -315,11 +377,57 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
 
 
         @Override
-        protected void onPostExecute(JSONArray savedMovieJsonArray) {
+        protected void onPostExecute(final JSONArray savedMovieJsonArray) {
             if (savedMovieJsonArray == null){
                 Toast.makeText(getContext(), "No saved movies!", Toast.LENGTH_LONG).show();
             } else {
                 mgridView.setAdapter(new ImageAdapter(getContext(), savedMovieJsonArray));
+
+                mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        JSONObject movie;
+
+                        String movieTitle = null;
+                        String movieImagePath = null;
+                        String movieDescription = null;
+                        Double movieVoteAverage = null;
+                        String movieReleaseDate = null;
+                        String movieID = null;
+
+                        try {
+                            movie = savedMovieJsonArray.getJSONObject(position);
+                        } catch (JSONException e) {
+                            Log.e(getClass().getSimpleName(), "MainActivity.OnItemClickListener", e);
+                            return;
+                        }
+
+
+
+                        try {
+                            movieTitle = movie.getString("title");
+                            movieImagePath = movie.getString("poster_path");
+                            movieDescription = movie.getString("description");
+                            movieVoteAverage = movie.getDouble("vote_avg");
+                            movieReleaseDate = movie.getString("release_date");
+                            movieID = movie.getString("movie_id");
+
+
+                        } catch (JSONException e) {
+                            Log.e(getClass().getSimpleName(), "MainActivity.OnItemClickListener", e);
+                        }
+
+                        detailView = new Intent(getContext(), DetailViewActivity.class);
+                        detailView.putExtra("title", movieTitle);
+                        detailView.putExtra("imagePath", movieImagePath);
+                        detailView.putExtra("description", movieDescription);
+                        detailView.putExtra("vote_avg", movieVoteAverage);
+                        detailView.putExtra("release_date", movieReleaseDate);
+                        detailView.putExtra("movie_id", movieID);
+                        onButtonPressed();
+//                    startActivity(detailView);
+                    }
+                });
             }
         }
     }
@@ -330,7 +438,6 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
 
         @Override
         protected Void doInBackground(Void... params) throws SQLException {
-            SQLiteOpenHelper movieHelper = new MovieHelper(getContext());
 
             //TODO add delete from content provider
             getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
