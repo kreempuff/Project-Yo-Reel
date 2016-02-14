@@ -18,7 +18,7 @@ public class MovieProvider extends ContentProvider {
 
     private static final int ONE_MOVIE = 1;
 
-    private static final int ALL_MOVIES = 2;
+    private static final int ONE_MOVIE_ID = 2;
 
 
 
@@ -28,8 +28,8 @@ public class MovieProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, MovieContract.PATH_MOVIES + "/#", ONE_MOVIE);
-        matcher.addURI(authority, MovieContract.PATH_MOVIES, ALL_MOVIES);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES + "/#", ONE_MOVIE_ID);
+        matcher.addURI(authority, MovieContract.PATH_MOVIES, ONE_MOVIE);
 
         return matcher;
     }
@@ -57,20 +57,9 @@ public class MovieProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
-            case ALL_MOVIES:
-                cursor = movieHelper.getReadableDatabase().query(
-                        MovieContract.MovieEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selection == null? null : selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
             default:
                 throw new UnsupportedOperationException("Uri not supported: " + uri);
-        };
+        }
 
 
         return cursor;
@@ -114,7 +103,7 @@ public class MovieProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;
-            case ALL_MOVIES:
+            case ONE_MOVIE_ID:
                 rowsDeleted = db.delete(
                         MovieContract.MovieEntry.TABLE_NAME,
                         MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = '" + ContentUris.parseId(uri) + "'",

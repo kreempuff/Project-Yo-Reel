@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import app.com.lentusignavus.popularmovies.GetMovies2;
 import app.com.lentusignavus.popularmovies.activity.DetailViewActivity;
 import app.com.lentusignavus.popularmovies.GetMovies;
 import app.com.lentusignavus.popularmovies.R;
@@ -39,64 +40,34 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MainFragment extends Fragment implements OnTaskCompleted, LoaderManager.LoaderCallbacks {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
 
     @Bind(R.id.gridview) GridView mgridView;
     Intent detailView;
     String sort;
-    GetMovies getMovies;
+    GetMovies2 getMovies;
     SQLiteOpenHelper dbHelper;
     SQLiteDatabase db;
-
 
     final String VOTE_SORT = "vote_average.desc";
     final String POP_SORT = "popularity.desc";
     final String FAVORITE_SORT = "favorites";
 
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
     public MainFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
+    public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -135,9 +106,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
 
         sort = POP_SORT;
 
-        getMovies = new GetMovies(this);
+        getMovies = new GetMovies2(this, getContext());
 
-        getMovies.execute(sort);
+        getMovies.getMovies(sort);
     }
 
     @Override
@@ -185,8 +156,6 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
                     } catch (JSONException e) {
                         Log.e(getClass().getSimpleName(), "MainActivity.OnItemClickListener", e);
                     }
-                    Toast.makeText(getContext(), movieTitle, Toast.LENGTH_SHORT)
-                            .show();
 
                     detailView = new Intent(getContext(), DetailViewActivity.class);
                     detailView.putExtra("title", movieTitle);
@@ -248,8 +217,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
                     break;
                 } else {
                     sort = POP_SORT;
-                    getMovies = new GetMovies(this);
-                    getMovies.execute(sort);
+                    getMovies = new GetMovies2(this, getContext());
+                    getMovies.getMovies(sort);
                     break;
                 }
             case (R.id.vote_option_id):
@@ -257,8 +226,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
                     break;
                 } else {
                     sort = VOTE_SORT;
-                    getMovies = new GetMovies(this);
-                    getMovies.execute(sort);
+                    getMovies = new GetMovies2(this, getContext());
+                    getMovies.getMovies(sort);
                     break;
                 }
             case (R.id.settings_option):
@@ -364,7 +333,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
             SQLiteOpenHelper movieHelper = new MovieHelper(getContext());
 
             //TODO add delete from content provider
-            getContentResolver();
+            getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
             return null;
         }
 

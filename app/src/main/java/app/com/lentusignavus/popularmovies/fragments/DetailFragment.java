@@ -1,8 +1,10 @@
 package app.com.lentusignavus.popularmovies.fragments;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -39,6 +41,7 @@ import app.com.lentusignavus.popularmovies.adapters.ReviewAdapter;
 import app.com.lentusignavus.popularmovies.adapters.TrailerAdapter;
 import app.com.lentusignavus.popularmovies.database.MovieContract;
 import app.com.lentusignavus.popularmovies.database.MovieHelper;
+import app.com.lentusignavus.popularmovies.interfaces.OnTaskCompleted;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
@@ -52,7 +55,7 @@ import cz.msebera.android.httpclient.Header;
  * Use the {@link DetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailFragment extends Fragment implements View.OnClickListener {
+public class DetailFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks, OnTaskCompleted {
 
     private final String LOG_TAG = "DetailFragment - TAG";
 
@@ -133,6 +136,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getMovieTrailers(movieId);
+
         checkIfMovieIsFavoriteAndSetUpFavoriteButton();
     }
 
@@ -186,6 +190,26 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
+    }
+
+    @Override
+    public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
+
     }
 
     /**
@@ -329,9 +353,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     }
 
     public void unFavoriteMovie() {
-        movieHelper = new MovieHelper(getContext());
+//        movieHelper = new MovieHelper(getContext());
+//
+//        db = movieHelper.getWritableDatabase();
 
-        db = movieHelper.getWritableDatabase();
+        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + movieId, null);
 
         String deleteQuery = String.format("DELETE FROM %s WHERE %s = %s",
                 MovieContract.MovieEntry.TABLE_NAME,

@@ -24,7 +24,6 @@ public class GetMovies extends AsyncTask<String, Void, JSONObject> {
 
     private final String TAG = getClass().getSimpleName();
 
-    private Uri.Builder api;
     // These two need to be declared outside the try/catch
     // so that they can be closed in the finally block.
     HttpURLConnection urlConnection = null;
