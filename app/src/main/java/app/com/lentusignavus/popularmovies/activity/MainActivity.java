@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener, DetailFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MainFragment.OnMainFragmentInteractionListener, DetailFragment.OnFragmentInteractionListener {
 
     @Bind(R.id.toolbar) Toolbar toolbar;
     Boolean tabletMode;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction(Intent detailIntent) {
+    public void onMainFragmentInteraction(Intent detailIntent) {
 
         tabletMode = (findViewById(R.id.detail_container) != null);
 

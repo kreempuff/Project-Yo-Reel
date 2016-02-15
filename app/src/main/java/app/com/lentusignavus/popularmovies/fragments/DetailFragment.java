@@ -56,7 +56,7 @@ import cz.msebera.android.httpclient.Header;
  * Use the {@link DetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailFragment extends Fragment implements View.OnClickListener, OnTaskCompleted {
+public class DetailFragment extends Fragment {
 
     private final String LOG_TAG = "DetailFragment - TAG";
 
@@ -80,25 +80,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     @Bind(R.id.review_list_view) ListView reviewList;
     JSONArray youtubeVids;
 
-    SQLiteOpenHelper movieHelper;
-    SQLiteDatabase db;
-
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public DetailFragment() {
-        // Required empty public constructor
-    }
+    public DetailFragment() {}
 
     public static DetailFragment newInstance(Bundle mainActivityBundle) {
         DetailFragment fragment = new DetailFragment();
@@ -109,10 +94,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -141,7 +122,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         checkIfMovieIsFavoriteAndSetUpFavoriteButton();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
             mListener.onDetailFragmentInteraction();
@@ -180,13 +160,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
             releaseDate = tabletExtras.getString("release_date");
             movieId = tabletExtras.getString("movie_id");
 
-            Log.d("Table Extra", tabletExtras.toString());
         }
-
-    }
-
-    @Override
-    public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
 
     }
 
@@ -205,13 +179,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         void onDetailFragmentInteraction();
     }
 
-    public void onClick(View v){
-
-        mListener.onDetailFragmentInteraction();
-
-        return;
-
-    }
 
 
     private ArrayList<View> getAllChildren(View v) {
@@ -272,7 +239,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                Log.d(LOG_TAG, "IS CHECKED:" + (String.valueOf(isChecked)));
                 if(isChecked) {
                     favoriteMovie();
                     mListener.onDetailFragmentInteraction();
@@ -329,7 +295,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
         int rows = getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + movieId, null);
 
-        Log.d(getClass().getSimpleName(), String.format("Rows deleted: %s", rows));
+        if (rows > 0) {
+            Toast.makeText(getContext(), "Movie UnFavorited", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -421,7 +389,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, On
 
 
                 reviewList.setAdapter(new ReviewAdapter(reviews, getContext()));
-                Log.d(getClass().getSimpleName(), response.toString());
                 super.onSuccess(statusCode, headers, response);
             }
 

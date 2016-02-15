@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import app.com.lentusignavus.popularmovies.Utils.UtilMethods;
 import app.com.lentusignavus.popularmovies.interfaces.OnTaskCompleted;
 import cz.msebera.android.httpclient.Header;
 
@@ -63,7 +64,7 @@ public class GetMovies2 extends AsyncHttpClient {
 
     public void getMovies(String sort){
 
-        if(connectedToNetwork()){
+        if(UtilMethods.connectedToNetwork(serviceContext)){
             Uri apiUrl = Uri.parse(ApiInfo.getApiBaseUrl())
                     .buildUpon()
                     .appendPath("discover")
@@ -101,14 +102,4 @@ public class GetMovies2 extends AsyncHttpClient {
 
         }
     };
-
-
-
-    private boolean connectedToNetwork() {
-        ConnectivityManager cm =
-                (ConnectivityManager) serviceContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-    }
 }

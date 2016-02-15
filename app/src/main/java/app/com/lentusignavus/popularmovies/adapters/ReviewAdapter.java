@@ -61,9 +61,6 @@ public class ReviewAdapter extends BaseAdapter {
             textView.setTextColor(ContextCompat.getColor(mContext, R.color.text_color));
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 
-
-            Toast.makeText(mContext, "Trailer Adapter", Toast.LENGTH_SHORT).show();
-
             try {
                 textView.setText(reviewArray.getJSONObject(position).getString("content"));
             } catch (JSONException e) {

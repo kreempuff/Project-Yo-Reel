@@ -1,9 +1,7 @@
 package app.com.lentusignavus.popularmovies.fragments;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,11 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import app.com.lentusignavus.popularmovies.GetMovies2;
-import app.com.lentusignavus.popularmovies.activity.DetailViewActivity;
-import app.com.lentusignavus.popularmovies.GetMovies;
 import app.com.lentusignavus.popularmovies.R;
 import app.com.lentusignavus.popularmovies.Settings;
-import app.com.lentusignavus.popularmovies.activity.MainActivity;
+import app.com.lentusignavus.popularmovies.activity.DetailViewActivity;
 import app.com.lentusignavus.popularmovies.adapters.ImageAdapter;
 import app.com.lentusignavus.popularmovies.database.MovieContract;
 import app.com.lentusignavus.popularmovies.database.MovieHelper;
@@ -49,15 +44,13 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     Intent detailView;
     String sort;
     GetMovies2 getMovies;
-    SQLiteOpenHelper dbHelper;
-    SQLiteDatabase db;
 
     final String VOTE_SORT = "vote_average.desc";
     final String POP_SORT = "popularity.desc";
     final String FAVORITE_SORT = "favorites";
 
 
-    private OnFragmentInteractionListener mListener;
+    private OnMainFragmentInteractionListener mListener;
 
     public MainFragment() {
     }
@@ -83,9 +76,9 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed() {
+    public void sendIntentToMainActivity() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(detailView);
+            mListener.onMainFragmentInteraction(detailView);
         }
     }
 
@@ -93,8 +86,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnMainFragmentInteractionListener) {
+            mListener = (OnMainFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -169,8 +162,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     detailView.putExtra("vote_avg", movieVoteAverage);
                     detailView.putExtra("release_date", movieReleaseDate);
                     detailView.putExtra("movie_id", movieID);
-                    onButtonPressed();
-//                    startActivity(detailView);
+                    sendIntentToMainActivity();
                 }
             });
     }
@@ -187,9 +179,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Intent mIntent);
+    public interface OnMainFragmentInteractionListener {
+        void onMainFragmentInteraction(Intent mIntent);
     }
 
 
@@ -239,6 +230,8 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
 
     public void reloadMovies () {
+        //method to reload favorite movies display if the user is in that view state
+        //in tablet mode
         if(!sort.equals(FAVORITE_SORT)){
             return;
         }
@@ -257,9 +250,6 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
 
         @Override
         protected JSONArray doInBackground(Void... params) throws SQLException {
-            dbHelper = new MovieHelper(getContext());
-
-            db = dbHelper.getReadableDatabase();
 
             String[] columns = {
                     MovieContract.MovieEntry.COLUMN_TITLE,
@@ -270,7 +260,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     MovieContract.MovieEntry.COLUMN_IMAGE_URI
             };
 
-            Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, columns, null, null, null, null, null);
+            Cursor cursor = getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, columns, null, null, null);
 
             if(!cursor.moveToFirst()) {
                 endEarly = true;
@@ -297,9 +287,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    //TODO figure out why moving the movie JSONObject declartion messes up query
                     movies.put(movie);
-                    Log.d(getClass().getSimpleName(), movies.toString());
                 } while (cursor.moveToNext());
 
                 endEarly = false;
@@ -320,6 +308,12 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
         protected void onPostExecute(final JSONArray savedMovieJsonArray) {
             if (savedMovieJsonArray == null){
                 Toast.makeText(getContext(), "No saved movies!", Toast.LENGTH_LONG).show();
+                //If unfavoriting a movie causes no movies to be there
+                //Reload popular movies
+                if (sort.equals(FAVORITE_SORT)){
+                    sort = POP_SORT;
+                    new GetMovies2(MainFragment.this, getContext()).getMovies(sort);
+                }
             } else {
                 mgridView.setAdapter(new ImageAdapter(getContext(), savedMovieJsonArray));
 
@@ -364,8 +358,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted {
                         detailView.putExtra("vote_avg", movieVoteAverage);
                         detailView.putExtra("release_date", movieReleaseDate);
                         detailView.putExtra("movie_id", movieID);
-                        onButtonPressed();
-//                    startActivity(detailView);
+                        sendIntentToMainActivity();
                     }
                 });
             }

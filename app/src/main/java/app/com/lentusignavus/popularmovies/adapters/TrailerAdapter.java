@@ -1,28 +1,16 @@
 package app.com.lentusignavus.popularmovies.adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import app.com.lentusignavus.popularmovies.R;
-import butterknife.Bind;
 
-/**
- * Created by kare2436 on 1/19/16.
- */
 public class TrailerAdapter extends BaseAdapter {
     private JSONArray trailerArray;
     private Context mContext;
