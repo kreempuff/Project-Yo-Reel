@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 import app.com.lentusignavus.popularmovies.ApiInfo;
 import app.com.lentusignavus.popularmovies.R;
+import app.com.lentusignavus.popularmovies.Utils.UtilMethods;
 import app.com.lentusignavus.popularmovies.adapters.ReviewAdapter;
 import app.com.lentusignavus.popularmovies.adapters.TrailerAdapter;
 import app.com.lentusignavus.popularmovies.database.MovieContract;
@@ -55,7 +56,7 @@ import cz.msebera.android.httpclient.Header;
  * Use the {@link DetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailFragment extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks, OnTaskCompleted {
+public class DetailFragment extends Fragment implements View.OnClickListener, OnTaskCompleted {
 
     private final String LOG_TAG = "DetailFragment - TAG";
 
@@ -143,7 +144,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction();
+            mListener.onDetailFragmentInteraction();
         }
     }
 
@@ -185,21 +186,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
     }
 
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader loader, Object data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-
-    }
-
-    @Override
     public void onTaskCompleted(JSONObject jsonObject) throws JSONException {
 
     }
@@ -216,12 +202,12 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction();
+        void onDetailFragmentInteraction();
     }
 
     public void onClick(View v){
 
-        mListener.onFragmentInteraction();
+        mListener.onDetailFragmentInteraction();
 
         return;
 
@@ -258,9 +244,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
             return;
         }
 
-        movieHelper = new MovieHelper(getContext());
-
-        db = movieHelper.getWritableDatabase();
 
         String[] columnsToReturn = {
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID
@@ -270,12 +253,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
                 movieId
         };
 
-
-
-        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+        Cursor cursor = getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                 columnsToReturn,
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
-                selectionArgs, null, null, null);
+                selectionArgs, null, null);
 
         if(cursor.moveToFirst()){
             saveMovieButton.setChecked(true);
@@ -285,7 +266,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
             cursor.close();
         }
 
-        db.close();
 
         saveMovieButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -295,8 +275,10 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
                 Log.d(LOG_TAG, "IS CHECKED:" + (String.valueOf(isChecked)));
                 if(isChecked) {
                     favoriteMovie();
+                    mListener.onDetailFragmentInteraction();
                 } else {
                     unFavoriteMovie();
+                    mListener.onDetailFragmentInteraction();
                 }
             }
         });
@@ -312,10 +294,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
         String[] selectionArgs = {
                 movieId
         };
-
-//        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
-//                columnsToReturn, MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
-//                selectionArgs, null, null, null);
 
         Cursor cursor = getContext()
                 .getContentResolver()
@@ -374,6 +352,11 @@ public class DetailFragment extends Fragment implements View.OnClickListener, Lo
                 .build();
 
         AsyncHttpClient client = new AsyncHttpClient();
+
+        if (!UtilMethods.connectedToNetwork(getContext())){
+            Toast.makeText(getContext(), "Not connected to Internet!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         client.get(trailerUrl.toString(), new JsonHttpResponseHandler(){
             @Override

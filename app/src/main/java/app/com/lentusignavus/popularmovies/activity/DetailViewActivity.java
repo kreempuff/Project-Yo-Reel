@@ -54,7 +54,7 @@ public class DetailViewActivity extends AppCompatActivity implements DetailFragm
 
 
     @Override
-    public void onFragmentInteraction() {
+    public void onDetailFragmentInteraction() {
         return;
     }
 }

@@ -33,9 +33,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
 
+
+
     @Override
-    public void onFragmentInteraction() {
-        return;
+    public void onDetailFragmentInteraction() {
+        if (tabletMode) {
+            MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_container);
+            if (fragment != null){
+                fragment.reloadMovies();
+            }
+        }
     }
 
     @Override

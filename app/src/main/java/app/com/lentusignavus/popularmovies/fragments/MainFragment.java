@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import app.com.lentusignavus.popularmovies.activity.DetailViewActivity;
 import app.com.lentusignavus.popularmovies.GetMovies;
 import app.com.lentusignavus.popularmovies.R;
 import app.com.lentusignavus.popularmovies.Settings;
+import app.com.lentusignavus.popularmovies.activity.MainActivity;
 import app.com.lentusignavus.popularmovies.adapters.ImageAdapter;
 import app.com.lentusignavus.popularmovies.database.MovieContract;
 import app.com.lentusignavus.popularmovies.database.MovieHelper;
@@ -40,7 +42,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class MainFragment extends Fragment implements OnTaskCompleted, LoaderManager.LoaderCallbacks {
+public class MainFragment extends Fragment implements OnTaskCompleted {
 
 
     @Bind(R.id.gridview) GridView mgridView;
@@ -104,73 +106,14 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (savedInstanceState != null){
-            Log.d(getClass().getSimpleName(), savedInstanceState.toString());
-        }
-
-        if (savedInstanceState != null && savedInstanceState.get("sort") != null){
-        Log.d(getClass().getSimpleName(), "Inside Save coditional");
-            sort = savedInstanceState.getString("sort");
-            switch (sort){
-                case FAVORITE_SORT:
-                    new getFavoriteMoviesTask().execute();
-                    break;
-                default:
-                    getMovies = new GetMovies2(this, getContext());
-
-                    getMovies.getMovies(sort);
-                    break;
-            }
-        } else {
-        Log.d(getClass().getSimpleName(), "Inside else coditional");
-
         sort = POP_SORT;
 
         getMovies = new GetMovies2(this, getContext());
 
         getMovies.getMovies(sort);
 
-        }
-
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        outState.putString("sort", sort);
-
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-
-        if (savedInstanceState != null && savedInstanceState.getString("sort") != null){
-            Log.d(getClass().getSimpleName(), "Inside Save coditional");
-            sort = savedInstanceState.getString("sort");
-            switch (sort){
-                case FAVORITE_SORT:
-                    new getFavoriteMoviesTask().execute();
-                    break;
-                default:
-                    getMovies = new GetMovies2(this, getContext());
-
-                    getMovies.getMovies(sort);
-                    break;
-            }
-        } else {
-            Log.d(getClass().getSimpleName(), "Inside else coditional");
-
-            sort = POP_SORT;
-
-            getMovies = new GetMovies2(this, getContext());
-
-            getMovies.getMovies(sort);
-
-        }
-
-        super.onViewStateRestored(savedInstanceState);
-    }
 
     @Override
     public void onDetach() {
@@ -232,20 +175,7 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
             });
     }
 
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        return null;
-    }
 
-    @Override
-    public void onLoadFinished(Loader loader, Object data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -306,6 +236,16 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
         }
         return true;
     }
+
+
+    public void reloadMovies () {
+        if(!sort.equals(FAVORITE_SORT)){
+            return;
+        }
+        AsyncTask<Void, Void, JSONArray> favorMov = new getFavoriteMoviesTask();
+        favorMov.execute();
+    }
+
 
 
 
@@ -438,8 +378,6 @@ public class MainFragment extends Fragment implements OnTaskCompleted, LoaderMan
 
         @Override
         protected Void doInBackground(Void... params) throws SQLException {
-
-            //TODO add delete from content provider
             getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
             return null;
         }
