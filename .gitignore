@@ -2,3 +2,4 @@
 ApiKey.java
 .gradle/
 local.properties
+*.apk
